@@ -13,10 +13,13 @@ class NearbyLocationsScreen extends StatefulWidget {
 class _NearbyLocationsScreenState extends State<NearbyLocationsScreen> {
   Position? _currentPosition;
   String _locationStatus = "Obtendo localização...";
-  final String _googleApiKey = "AIzaSyCT1Uf1shnpAG4e_qYnAMP8fdmHqCH4me4"; // Substitua pela sua chave da API
+  final String _googleApiKey = "AIzaSyCT1Uf1shnpAG4e_qYnAMP8fdmHqCH4me4";
   List<Map<String, dynamic>> _waterSources = [];
   List<Map<String, dynamic>> _nationalParks = [];
   List<Map<String, dynamic>> _hospitals = [];
+  List<Map<String, dynamic>> _gasStations = [];
+  List<Map<String, dynamic>> _markets = [];
+  List<Map<String, dynamic>> _hardwareStores = [];
 
   @override
   void initState() {
@@ -67,12 +70,12 @@ class _NearbyLocationsScreenState extends State<NearbyLocationsScreen> {
     double lat = _currentPosition!.latitude;
     double lng = _currentPosition!.longitude;
 
-    // Buscar hospitais
     _hospitals = await _getPlacesNearby(lat, lng, "hospital");
-    // Buscar parques nacionais
     _nationalParks = await _getPlacesNearby(lat, lng, "park");
-    // Buscar fontes de água (lagos, rios)
     _waterSources = await _getPlacesNearby(lat, lng, "natural_feature");
+    _gasStations = await _getPlacesNearby(lat, lng, "gas_station");
+    _markets = await _getPlacesNearby(lat, lng, "supermarket");
+    _hardwareStores = await _getPlacesNearby(lat, lng, "hardware_store");
 
     setState(() {});
   }
@@ -127,6 +130,9 @@ class _NearbyLocationsScreenState extends State<NearbyLocationsScreen> {
                   _buildCategory("Pontos de Água", Icons.water, Colors.blue, _waterSources),
                   _buildCategory("Parques Nacionais", Icons.park, Colors.green, _nationalParks),
                   _buildCategory("Hospitais", Icons.local_hospital, Colors.red, _hospitals),
+                  _buildCategory("Postos de Gasolina", Icons.local_gas_station, Colors.orange, _gasStations),
+                  _buildCategory("Mercados", Icons.store, Colors.purple, _markets),
+                  _buildCategory("Lojas de Ferramenta", Icons.build, Colors.brown, _hardwareStores),
                 ],
               ),
       ),
