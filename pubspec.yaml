@@ -1,0 +1,36 @@
+name: prepapp_3
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_maps_flutter: ^2.5.0
+  geolocator: ^13.0.2
+  http: ^0.13.6
+  shared_preferences: ^2.2.2
+  url_launcher: ^6.3.1
+  cupertino_icons: ^1.0.8
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo.png" # Caminho da sua imagem
+  adaptive_icon_background: "#000000" # Cor de fundo para Android
+  adaptive_icon_foreground: "assets/logo.png" # Opcional, para ícones adaptativos
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/banner.png
