@@ -110,6 +110,24 @@ class _SurvivalGuideScreenState extends State<SurvivalGuideScreen> {
     'content': 'Rádios portáteis, apitos e sinais visuais são essenciais para se comunicar em situações extremas. Defina códigos de comunicação com seu grupo e mantenha sempre baterias carregadas ou métodos alternativos de energia.'
   }
 ],
+  'Técnicas de Sobrevivência': [
+  {
+      'title': 'Técnicas de Plantio e Armazenamento',
+      'content': 'Para garantir segurança alimentar, cultive alimentos de ciclo curto, como batatas, feijão e milho. Utilize compostagem para enriquecer o solo e técnicas como rotação de culturas para manter a fertilidade. Para armazenamento, seque grãos ao sol e guarde em recipientes herméticos para evitar pragas e umidade.'
+   },
+   {
+     'title': 'Proteína Animal (Técnicas e Cuidados)',
+     'content': 'A criação de pequenos animais, como galinhas e coelhos, é eficiente para obtenção de proteína. Garanta abrigo adequado, alimentação equilibrada e acesso a água limpa. A caça exige conhecimento de rastreamento e armadilhas, sempre respeitando legislações locais.'
+   },
+   {
+     'title': 'Pesca',
+     'content': 'A pesca é uma excelente fonte de alimento. Técnicas eficazes incluem anzol e linha, armadilhas submersas e redes. Identifique locais propícios, como rios de correnteza moderada e lagos ricos em peixes. A preservação da pesca envolve respeitar períodos de reprodução e tamanhos mínimos de captura.'
+    },
+    {
+     'title': 'Coleta de Plantas e Frutas Silvestres',
+     'content': 'O conhecimento sobre plantas comestíveis é essencial. Estude guias confiáveis e aprenda a identificar espécies seguras. Evite plantas com seiva leitosa ou odor forte, pois muitas são tóxicas. Frutas e raízes devem ser coletadas com moderação para não esgotar recursos naturais locais.'
+   }
+  ],
     'Energia Solar': [
       {
         'title': 'Painéis Solares Portáteis',
