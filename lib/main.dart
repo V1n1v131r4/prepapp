@@ -3,7 +3,7 @@ import 'map_screen.dart';
 import 'checklist_screen.dart';
 import 'tide_info_screen.dart';
 import 'first_aid_screen.dart';
-import 'noaa_weather_screen.dart';
+import 'weather_info_screen.dart';
 import 'repeater_list_screen.dart';
 import 'emergency_screen.dart';
 import 'survival_guide_screen.dart';
@@ -75,7 +75,7 @@ class DashboardScreen extends StatelessWidget {
                 squareButton(context, 'Locais Próximos', Icons.location_on, const Color(0xFF4F9297), NearbyLocationsScreen()),
                 squareButton(context, 'Primeiros Socorros', Icons.health_and_safety, const Color(0xFFF38E0C), FirstAidScreen()),
                 squareButton(context, 'Emergência', Icons.warning, const Color(0xFFBFC9A3), EmergencyScreen()),
-                squareButton(context, 'Clima - NOAA', Icons.cloud, const Color(0xFF282631), NOAAWeatherScreen()),
+                squareButton(context, 'Previsão Climática', Icons.cloud, const Color(0xFF282631), WeatherInfoScreen()),
                 squareButton(context, 'Informações sobre Marés', Icons.waves, const Color(0xFF90E5D5), TideInfoScreen()),
                 squareButton(context, 'Guia de Sobrevivência', Icons.book, const Color(0xFF354048), SurvivalGuideScreen()),
                 squareButton(context, 'Repetidoras de Rádio', Icons.radio, const Color(0xFF2D333D), RepeaterListScreen()),
