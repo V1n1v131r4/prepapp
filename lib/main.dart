@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'splash_screen.dart';
 import 'map_screen.dart';
 import 'checklist_screen.dart';
 import 'tide_info_screen.dart';
@@ -26,13 +27,13 @@ class PrepApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'PrepApp',
       theme: ThemeData.dark(),
-      home: const DashboardScreen(),
+      home: const SplashScreen(), // Inicia com a tela de carregamento
     );
   }
 }
 
-class DashboardScreen extends StatelessWidget {
-  const DashboardScreen({super.key});
+class MainScreen extends StatelessWidget {
+  const MainScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -129,20 +130,4 @@ PopupMenuItem<int> menuItem(BuildContext context, String text, Widget screen) {
       },
     ),
   );
-}
-
-class PlaceholderScreen extends StatelessWidget {
-  final String title;
-  const PlaceholderScreen(this.title, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF141424),
-      appBar: AppBar(title: Text(title), backgroundColor: const Color(0xFF24212F)),
-      body: const Center(
-        child: Text('Em desenvolvimento...', style: TextStyle(color: Colors.white)),
-      ),
-    );
-  }
 }

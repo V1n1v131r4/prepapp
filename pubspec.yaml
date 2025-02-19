@@ -34,3 +34,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/banner.png
+    - assets/bunqr_logo.png
+    - assets/logo.png
