@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         applicationId = "com.bunqr.prepapp"
-        minSdk = flutter.minSdkVersion
+        minSdk = 21
         targetSdk = flutter.targetSdkVersion
         versionCode = 2
         versionName = "1.0.2"
