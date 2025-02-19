@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class EmergencyScreen extends StatelessWidget {
   const EmergencyScreen({super.key});
 
-  void _callEmergency(String number) async {
-    final Uri phoneUri = Uri(scheme: 'tel', path: number);
-    if (await canLaunchUrl(phoneUri)) {
-      await launchUrl(phoneUri);
+  Future<void> _callEmergency(String number) async {
+    var status = await Permission.phone.request(); // Solicita permissão
+
+    if (status.isGranted) {
+      final Uri phoneUri = Uri(scheme: 'tel', path: number);
+      if (await canLaunchUrl(phoneUri)) {
+        await launchUrl(phoneUri);
+      } else {
+        debugPrint('Erro ao tentar iniciar a chamada para $number');
+      }
     } else {
-      debugPrint('Não foi possível iniciar a chamada para $number');
+      debugPrint('Permissão de chamada não concedida.');
     }
   }
 
