@@ -10,10 +10,16 @@ class EmergencyScreen extends StatelessWidget {
 
     if (status.isGranted) {
       final Uri phoneUri = Uri(scheme: 'tel', path: number);
+
       if (await canLaunchUrl(phoneUri)) {
-        await launchUrl(phoneUri);
+        await launchUrl(phoneUri, mode: LaunchMode.externalApplication);
       } else {
-        debugPrint('Erro ao tentar iniciar a chamada para $number');
+        debugPrint('Erro ao tentar iniciar a chamada para $number. Tentando fallback...');
+        try {
+          await launchUrl(phoneUri);
+        } catch (e) {
+          debugPrint('Falha ao iniciar a chamada: $e');
+        }
       }
     } else {
       debugPrint('Permissão de chamada não concedida.');
@@ -35,29 +41,30 @@ class EmergencyScreen extends StatelessWidget {
           mainAxisSpacing: 15,
           crossAxisSpacing: 15,
           children: [
-            emergencyButton(context, '🚢 Marinha', '185'),
-            emergencyButton(context, '🚔 Polícia Militar', '190'),
-            emergencyButton(context, '🚓 PRF', '191'),
-            emergencyButton(context, '🚑 SAMU', '192'),
-            emergencyButton(context, '🔥 Bombeiros', '193'),
-            emergencyButton(context, '🕵️ Polícia Federal', '194'),
-            emergencyButton(context, '🚔 PRE', '198'),
-            emergencyButton(context, '⚠️ Defesa Civil', '199'),
+            _emergencyButton('🚢 Marinha', '185'),
+            _emergencyButton('🚔 Polícia Militar', '190'),
+            _emergencyButton('🚓 PRF', '191'),
+            _emergencyButton('🚑 SAMU', '192'),
+            _emergencyButton('🔥 Bombeiros', '193'),
+            _emergencyButton('🕵️ Polícia Federal', '194'),
+            _emergencyButton('🚔 PRE', '198'),
+            _emergencyButton('⚠️ Defesa Civil', '199'),
           ],
         ),
       ),
     );
   }
 
-  Widget emergencyButton(BuildContext context, String text, String number) {
-    return ElevatedButton(
+  Widget _emergencyButton(String text, String number) {
+    return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.grey[800],
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 10),
       ),
       onPressed: () => _callEmergency(number),
-      child: Text(
+      icon: const Icon(Icons.phone, color: Colors.white),
+      label: Text(
         text,
         style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
         textAlign: TextAlign.center,
