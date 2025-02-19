@@ -1,4 +1,4 @@
-package com.example.prepapp_3
+package com.bunqr.prepapp
 
 import io.flutter.embedding.android.FlutterActivity
 
