@@ -18,6 +18,7 @@ dependencies:
   intl: ^0.20.2
   flutter_launcher_icons: ^0.14.3
   permission_handler: ^11.0.1
+  in_app_purchase: ^3.1.8
 
 dev_dependencies:
   flutter_test:
