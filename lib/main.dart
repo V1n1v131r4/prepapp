@@ -13,6 +13,7 @@ import 'about_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'nearby_locations_screen.dart';
 import 'opsec_digital_screen.dart';
+import 'premium_placeholder_page.dart';
 
 void main() {
   runApp(const PrepApp());
@@ -51,6 +52,7 @@ class MainScreen extends StatelessWidget {
                 position: const RelativeRect.fromLTRB(1000, 60, 10, 0),
                 items: [
                   menuItem(context, '📰 Notícias', NewsScreen()),
+                  menuItem(context, '🎓 Treinamentos', PremiumPlaceholderPage()),
                   menuItem(context, 'ℹ️ Sobre o PrepApp', AboutScreen()),
                   menuItem(context, '🔏 Política de Privacidade', PrivacyPolicyScreen()),
                 ],
