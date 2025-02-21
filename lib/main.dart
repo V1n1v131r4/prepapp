@@ -28,7 +28,7 @@ class PrepApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'PrepApp',
       theme: ThemeData.dark(),
-      home: const SplashScreen(), // Inicia com a tela de carregamento
+      home: const SplashScreen(),
     );
   }
 }
@@ -38,28 +38,42 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: const Color(0xFF141424),
       appBar: AppBar(
         title: const Text('Esteja preparado!'),
         backgroundColor: const Color(0xFF24212F),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              showMenu(
-                context: context,
-                position: const RelativeRect.fromLTRB(1000, 60, 10, 0),
-                items: [
-                  menuItem(context, '📰 Notícias', NewsScreen()),
-                  menuItem(context, '🎓 Treinamentos', PremiumPlaceholderPage()),
-                  menuItem(context, 'ℹ️ Sobre o PrepApp', AboutScreen()),
-                  menuItem(context, '🔏 Política de Privacidade', PrivacyPolicyScreen()),
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () => scaffoldKey.currentState?.openDrawer(),
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                color: Color(0xFF24212F),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text('PrepApp', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                  SizedBox(height: 8),
+                  Text('Esteja preparado!', style: TextStyle(fontSize: 16, color: Colors.white70)),
                 ],
-              );
-            },
-          ),
-        ],
+              ),
+            ),
+            menuItem(context, '📰 Notícias', NewsScreen()),
+            menuItem(context, '🎓 Treinamentos', PremiumPlaceholderPage()),
+            menuItem(context, 'ℹ️ Sobre o PrepApp', AboutScreen()),
+            menuItem(context, '🔏 Política de Privacidade', PrivacyPolicyScreen()),
+          ],
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -119,17 +133,15 @@ Widget squareButton(BuildContext context, String text, IconData icon, Color colo
   );
 }
 
-PopupMenuItem<int> menuItem(BuildContext context, String text, Widget screen) {
-  return PopupMenuItem<int>(
-    child: ListTile(
-      title: Text(text),
-      onTap: () {
-        Navigator.pop(context);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => screen),
-        );
-      },
-    ),
+Widget menuItem(BuildContext context, String text, Widget screen) {
+  return ListTile(
+    title: Text(text, style: const TextStyle(color: Colors.white, fontSize: 16)),
+    onTap: () {
+      Navigator.pop(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => screen),
+      );
+    },
   );
 }
