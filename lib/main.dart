@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'splash_screen.dart';
 import 'map_screen.dart';
 import 'checklist_screen.dart';
@@ -15,7 +16,15 @@ import 'nearby_locations_screen.dart';
 import 'opsec_digital_screen.dart';
 import 'premium_placeholder_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Verifica se o Google Play Billing está disponível
+  final bool available = await InAppPurchase.instance.isAvailable();
+  if (!available) {
+    debugPrint("⚠️ Google Play Billing não está disponível.");
+  }
+
   runApp(const PrepApp());
 }
 
@@ -33,22 +42,27 @@ class PrepApp extends StatelessWidget {
   }
 }
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  _MainScreenState createState() => _MainScreenState();
+}
 
+class _MainScreenState extends State<MainScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
+      key: _scaffoldKey,
       backgroundColor: const Color(0xFF141424),
       appBar: AppBar(
         title: const Text('Esteja preparado!'),
         backgroundColor: const Color(0xFF24212F),
         leading: IconButton(
           icon: const Icon(Icons.menu),
-          onPressed: () => scaffoldKey.currentState?.openDrawer(),
+          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
         ),
       ),
       drawer: Drawer(

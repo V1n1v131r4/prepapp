@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'training_content.dart'; // Importando a página de treinamento premium
 
 class PremiumPlaceholderPage extends StatefulWidget {
@@ -7,23 +8,69 @@ class PremiumPlaceholderPage extends StatefulWidget {
 }
 
 class _PremiumPlaceholderPageState extends State<PremiumPlaceholderPage> {
-  bool isProcessing = false; // Para evitar múltiplos cliques durante a compra
+  final InAppPurchase _iap = InAppPurchase.instance;
+  bool _isPremium = false;
+  bool _isProcessing = false;
+  List<ProductDetails> _products = [];
 
-  Future<void> processPurchase() async {
-    setState(() {
-      isProcessing = true;
+  @override
+  void initState() {
+    super.initState();
+    _initializePurchase();
+  }
+
+  /// 🔄 **Inicializa e verifica compras anteriores**
+  Future<void> _initializePurchase() async {
+    final bool available = await _iap.isAvailable();
+    if (!available) {
+      debugPrint("⚠️ In-App Purchases não está disponível.");
+      return;
+    }
+
+    // Escuta mudanças na compra (compra nova ou restauração)
+    _iap.purchaseStream.listen((List<PurchaseDetails> purchases) {
+      _handlePurchaseUpdates(purchases);
     });
 
-    // Simula um processo de pagamento
-    await Future.delayed(const Duration(seconds: 2));
+    // Carrega os produtos da loja
+    _loadProducts();
+  }
 
-    // Após a compra, redireciona para a página de treinamento
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => TrainingContentScreen()),
-      );
+  /// 🛍️ **Carrega os produtos disponíveis**
+  Future<void> _loadProducts() async {
+    const Set<String> _productIds = {'prepapp_premium'};
+    final ProductDetailsResponse response = await _iap.queryProductDetails(_productIds);
+
+    if (response.productDetails.isNotEmpty) {
+      setState(() {
+        _products = response.productDetails;
+      });
     }
+  }
+
+  /// 🎯 **Verifica e atualiza status das compras**
+  void _handlePurchaseUpdates(List<PurchaseDetails> purchases) {
+    for (var purchase in purchases) {
+      if (purchase.status == PurchaseStatus.purchased || purchase.status == PurchaseStatus.restored) {
+        if (purchase.productID == "prepapp_premium") {
+          setState(() {
+            _isPremium = true;
+          });
+        }
+      }
+    }
+  }
+
+  /// 💳 **Processa a compra**
+  Future<void> _buyPremium() async {
+    if (_products.isEmpty) return;
+
+    setState(() {
+      _isProcessing = true;
+    });
+
+    final PurchaseParam purchaseParam = PurchaseParam(productDetails: _products.first);
+    await _iap.buyNonConsumable(purchaseParam: purchaseParam);
   }
 
   @override
@@ -54,12 +101,19 @@ class _PremiumPlaceholderPageState extends State<PremiumPlaceholderPage> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: isProcessing ? null : processPurchase,
-              child: isProcessing
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text("Upgrade para Premium"),
-            ),
+            _isPremium
+                ? const Text(
+                    "✅ Você já é Premium!",
+                    style: TextStyle(color: Colors.green, fontSize: 16, fontWeight: FontWeight.bold),
+                  )
+                : ElevatedButton(
+                    onPressed: _isProcessing ? null : _buyPremium,
+                    child: _isProcessing
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : Text(
+                            _products.isNotEmpty ? "Upgrade para Premium (${_products.first.price})" : "Carregando...",
+                          ),
+                  ),
           ],
         ),
       ),
@@ -67,6 +121,7 @@ class _PremiumPlaceholderPageState extends State<PremiumPlaceholderPage> {
   }
 }
 
+/// 📌 **Função para navegar entre Premium e Placeholder**
 void navigateToTraining(BuildContext context, bool isPremiumUser) {
   Navigator.push(
     context,
