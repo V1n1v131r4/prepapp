@@ -14,16 +14,14 @@ import 'privacy_policy_screen.dart';
 import 'nearby_locations_screen.dart';
 import 'opsec_digital_screen.dart';
 import 'premium_placeholder_page.dart';
+import 'training_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Verifica se o Google Play Billing está disponível
   final bool available = await InAppPurchase.instance.isAvailable();
   if (!available) {
-    debugPrint("⚠️ Google Play Billing não está disponível.");
+    debugPrint("\u26A0\uFE0F Google Play Billing não está disponível.");
   }
-
   runApp(const PrepApp());
 }
 
@@ -36,7 +34,7 @@ class PrepApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'PrepApp',
       theme: ThemeData.dark(),
-      home: const SplashScreen(),
+      home: const MainScreen(),
     );
   }
 }
@@ -50,6 +48,66 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isPremium = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkPremiumStatus();
+  }
+
+  Future<void> _checkPremiumStatus() async {
+    final Stream<List<PurchaseDetails>> purchaseStream = InAppPurchase.instance.purchaseStream;
+    purchaseStream.listen((purchaseDetailsList) {
+      for (var purchase in purchaseDetailsList) {
+        if (purchase.productID == "prepapp_premium" &&
+            (purchase.status == PurchaseStatus.purchased || purchase.status == PurchaseStatus.restored)) {
+          setState(() {
+            _isPremium = true;
+          });
+          break;
+        }
+      }
+    });
+  }
+
+  Widget menuItem(BuildContext context, String title, Widget destination) {
+    return ListTile(
+      title: Text(title),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => destination),
+        );
+      },
+    );
+  }
+
+  Widget squareButton(BuildContext context, String title, IconData icon, Color color, Widget destination) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        padding: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12), // Canto arredondado
+        ),
+      ),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => destination),
+        );
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 40, color: Colors.white),
+          const SizedBox(height: 10),
+          Text(title, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white)),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,9 +127,7 @@ class _MainScreenState extends State<MainScreen> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Color(0xFF24212F),
-              ),
+              decoration: const BoxDecoration(color: Color(0xFF24212F)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
@@ -81,9 +137,12 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               ),
             ),
-            menuItem(context, '🎓 Treinamentos', PremiumPlaceholderPage()),
-            menuItem(context, 'ℹ️ Sobre o PrepApp', AboutScreen()),
-            menuItem(context, '🔏 Política de Privacidade', PrivacyPolicyScreen()),
+            if (!_isPremium)
+              menuItem(context, '\ud83d\ude80 Upgrade para Premium', PremiumPlaceholderPage())
+            else
+              menuItem(context, '\ud83c\udf93 Treinamentos', TrainingScreen(isPremiumUser: _isPremium)),
+            menuItem(context, '\u2139\ufe0f Sobre o PrepApp', AboutScreen()),
+            menuItem(context, '\ud83d\udd0f Política de Privacidade', PrivacyPolicyScreen()),
           ],
         ),
       ),
@@ -117,43 +176,4 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
-}
-
-Widget squareButton(BuildContext context, String text, IconData icon, Color color, Widget screen) {
-  return ElevatedButton(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: color,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 10),
-    ),
-    onPressed: () => Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => screen),
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, size: 40, color: Colors.white),
-        const SizedBox(height: 10),
-        Text(
-          text,
-          style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    ),
-  );
-}
-
-Widget menuItem(BuildContext context, String text, Widget screen) {
-  return ListTile(
-    title: Text(text, style: const TextStyle(color: Colors.white, fontSize: 16)),
-    onTap: () {
-      Navigator.pop(context);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => screen),
-      );
-    },
-  );
 }
