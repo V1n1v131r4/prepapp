@@ -9,7 +9,6 @@ import 'weather_info_screen.dart';
 import 'repeater_list_screen.dart';
 import 'emergency_screen.dart';
 import 'survival_guide_screen.dart';
-import 'news_screen.dart';
 import 'about_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'nearby_locations_screen.dart';
@@ -82,7 +81,6 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               ),
             ),
-            menuItem(context, '📰 Notícias', NewsScreen()),
             menuItem(context, '🎓 Treinamentos', PremiumPlaceholderPage()),
             menuItem(context, 'ℹ️ Sobre o PrepApp', AboutScreen()),
             menuItem(context, '🔏 Política de Privacidade', PrivacyPolicyScreen()),
@@ -102,16 +100,16 @@ class _MainScreenState extends State<MainScreen> {
               crossAxisSpacing: 15,
               padding: const EdgeInsets.all(20),
               children: [
-                squareButton(context, 'Mapa Interativo', Icons.map, const Color(0xFF316472), MapScreen()),
-                squareButton(context, 'Locais Próximos', Icons.location_on, const Color(0xFF4F9297), NearbyLocationsScreen()),
+                squareButton(context, 'Guia de Sobrevivência', Icons.book, const Color(0xFF354048), SurvivalGuideScreen()),
                 squareButton(context, 'Primeiros Socorros', Icons.health_and_safety, const Color(0xFFF38E0C), FirstAidScreen()),
                 squareButton(context, 'Emergência', Icons.warning, const Color(0xFFBFC9A3), EmergencyScreen()),
+                squareButton(context, 'Mapa Interativo', Icons.map, const Color(0xFF316472), MapScreen()),
+                squareButton(context, 'Locais Próximos', Icons.location_on, const Color(0xFF4F9297), NearbyLocationsScreen()),
                 squareButton(context, 'Previsão Climática', Icons.cloud, const Color(0xFF282631), WeatherInfoScreen()),
-                squareButton(context, 'Informações sobre Marés', Icons.waves, const Color(0xFF90E5D5), TideInfoScreen()),
-                squareButton(context, 'Guia de Sobrevivência', Icons.book, const Color(0xFF354048), SurvivalGuideScreen()),
-                squareButton(context, 'Repetidoras de Rádio', Icons.radio, const Color(0xFF2D333D), RepeaterListScreen()),
-                squareButton(context, 'Checklists', Icons.checklist, const Color(0xFF4F9297), ChecklistScreen()),
                 squareButton(context, 'OPSEC Digital', Icons.shield, const Color(0xFF5555AA), OPSECDigitalScreen()),
+                squareButton(context, 'Repetidoras de Rádio', Icons.radio, const Color(0xFF2D333D), RepeaterListScreen()),
+                squareButton(context, 'Informações sobre Marés', Icons.waves, const Color(0xFF90E5D5), TideInfoScreen()),
+                squareButton(context, 'Checklists', Icons.checklist, const Color(0xFF4F9297), ChecklistScreen()),
               ],
             ),
           ),
