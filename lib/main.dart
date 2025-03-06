@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'splash_screen.dart';
 import 'map_screen.dart';
 import 'checklist_screen.dart';
@@ -34,7 +35,29 @@ class PrepApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'PrepApp',
       theme: ThemeData.dark(),
-      home: const MainScreen(),
+      home: const SplashScreen(), // Inicializa com a SplashScreen
+    );
+  }
+}
+
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // O SplashScreen será exibido por 3 segundos antes de navegar para a MainScreen
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MainScreen()),
+      );
+    });
+
+    return Scaffold(
+      backgroundColor: const Color(0xFF141424),
+      body: Center(
+        child: Image.asset('assets/bunqr_logo.png', width: 360),
+      ),
     );
   }
 }
@@ -57,11 +80,18 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _checkPremiumStatus() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool isPremium = prefs.getBool('isPremium') ?? false;
+    setState(() {
+      _isPremium = isPremium;
+    });
+
     final Stream<List<PurchaseDetails>> purchaseStream = InAppPurchase.instance.purchaseStream;
     purchaseStream.listen((purchaseDetailsList) {
       for (var purchase in purchaseDetailsList) {
         if (purchase.productID == "prepapp_premium" &&
             (purchase.status == PurchaseStatus.purchased || purchase.status == PurchaseStatus.restored)) {
+          prefs.setBool('isPremium', true);  // Save premium status
           setState(() {
             _isPremium = true;
           });
@@ -127,7 +157,7 @@ class _MainScreenState extends State<MainScreen> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: const BoxDecoration(color: Color(0xFF24212F)),
+              decoration: const BoxDecoration(color: Color.fromRGBO(36, 33, 47, 1)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
