@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'training_content.dart'; // Importando a página de treinamento premium
 
 class PremiumPlaceholderPage extends StatefulWidget {
@@ -34,6 +35,13 @@ class _PremiumPlaceholderPageState extends State<PremiumPlaceholderPage> {
 
     // Carrega os produtos da loja
     _loadProducts();
+
+    // Carregar o status de Premium salvo
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isPremiumSaved = prefs.getBool('isPremium') ?? false;
+    setState(() {
+      _isPremium = isPremiumSaved;
+    });
   }
 
   /// 🛍️ **Carrega os produtos disponíveis**
@@ -49,13 +57,23 @@ class _PremiumPlaceholderPageState extends State<PremiumPlaceholderPage> {
   }
 
   /// 🎯 **Verifica e atualiza status das compras**
-  void _handlePurchaseUpdates(List<PurchaseDetails> purchases) {
+  void _handlePurchaseUpdates(List<PurchaseDetails> purchases) async {
     for (var purchase in purchases) {
       if (purchase.status == PurchaseStatus.purchased || purchase.status == PurchaseStatus.restored) {
         if (purchase.productID == "prepapp_premium") {
           setState(() {
             _isPremium = true;
           });
+
+          // Salvar o status de Premium
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isPremium', true);
+
+          // Navegar automaticamente para a página de conteúdo Premium
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => TrainingContentScreen()),
+          );
         }
       }
     }
@@ -119,14 +137,4 @@ class _PremiumPlaceholderPageState extends State<PremiumPlaceholderPage> {
       ),
     );
   }
-}
-
-/// 📌 **Função para navegar entre Premium e Placeholder**
-void navigateToTraining(BuildContext context, bool isPremiumUser) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => isPremiumUser ? TrainingContentScreen() : PremiumPlaceholderPage(),
-    ),
-  );
 }
