@@ -14,7 +14,7 @@ import 'privacy_policy_screen.dart';
 import 'nearby_locations_screen.dart';
 import 'opsec_digital_screen.dart';
 import 'premium_placeholder_page.dart';
-import 'training_screen.dart';
+import 'training_content.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -147,7 +147,7 @@ class _MainScreenState extends State<MainScreen> {
             if (!_isPremium)
               menuItem(context, '\ud83d\ude80 Upgrade para Premium', PremiumPlaceholderPage())
             else
-              menuItem(context, '\ud83c\udf93 Treinamentos', TrainingScreen(isPremiumUser: _isPremium)),
+              menuItem(context, '\ud83c\udf93 Treinamentos', TrainingContentScreen()),
             menuItem(context, '\u2139\ufe0f Sobre o PrepApp', AboutScreen()),
             menuItem(context, '\ud83d\udd0f Política de Privacidade', PrivacyPolicyScreen()),
           ],
