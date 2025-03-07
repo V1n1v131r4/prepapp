@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'splash_screen.dart';
 import 'map_screen.dart';
 import 'checklist_screen.dart';
 import 'tide_info_screen.dart';
@@ -35,29 +34,7 @@ class PrepApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'PrepApp',
       theme: ThemeData.dark(),
-      home: const SplashScreen(), // Inicializa com a SplashScreen
-    );
-  }
-}
-
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // O SplashScreen será exibido por 3 segundos antes de navegar para a MainScreen
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-      );
-    });
-
-    return Scaffold(
-      backgroundColor: const Color(0xFF141424),
-      body: Center(
-        child: Image.asset('assets/bunqr_logo.png', width: 360),
-      ),
+      home: const MainScreen(),
     );
   }
 }
@@ -91,7 +68,7 @@ class _MainScreenState extends State<MainScreen> {
       for (var purchase in purchaseDetailsList) {
         if (purchase.productID == "prepapp_premium" &&
             (purchase.status == PurchaseStatus.purchased || purchase.status == PurchaseStatus.restored)) {
-          prefs.setBool('isPremium', true);  // Save premium status
+          prefs.setBool('isPremium', true);
           setState(() {
             _isPremium = true;
           });
@@ -119,7 +96,7 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: color,
         padding: const EdgeInsets.all(16),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12), // Canto arredondado
+          borderRadius: BorderRadius.circular(12),
         ),
       ),
       onPressed: () {
@@ -179,7 +156,10 @@ class _MainScreenState extends State<MainScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset('assets/banner.png', width: 360),
+          SizedBox(
+            width: double.infinity,
+            child: Image.asset('assets/banner.png', fit: BoxFit.cover),
+          ),
           const SizedBox(height: 20),
           Expanded(
             child: GridView.count(
