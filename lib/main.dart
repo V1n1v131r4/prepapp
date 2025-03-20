@@ -15,12 +15,14 @@ import 'nearby_locations_screen.dart';
 import 'opsec_digital_screen.dart';
 import 'premium_placeholder_page.dart';
 import 'training_content.dart';
+import 'calculator_screen.dart';
+import 'weather_alert_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final bool available = await InAppPurchase.instance.isAvailable();
   if (!available) {
-    debugPrint("\u26A0\uFE0F Google Play Billing não está disponível.");
+    debugPrint("⚠️ Google Play Billing não está disponível.");
   }
   runApp(const PrepApp());
 }
@@ -145,11 +147,11 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
             if (!_isPremium)
-              menuItem(context, '\ud83d\ude80 Upgrade para Premium', PremiumPlaceholderPage())
+              menuItem(context, '🚀 Upgrade para Premium', PremiumPlaceholderPage())
             else
-              menuItem(context, '\ud83c\udf93 Treinamentos', TrainingContentScreen()),
-            menuItem(context, '\u2139\ufe0f Sobre o PrepApp', AboutScreen()),
-            menuItem(context, '\ud83d\udd0f Política de Privacidade', PrivacyPolicyScreen()),
+              menuItem(context, '🎓 Treinamentos', TrainingContentScreen()),
+            menuItem(context, 'ℹ️ Sobre o PrepApp', AboutScreen()),
+            menuItem(context, '🔏 Política de Privacidade', PrivacyPolicyScreen()),
           ],
         ),
       ),
@@ -175,6 +177,8 @@ class _MainScreenState extends State<MainScreen> {
                 squareButton(context, 'Locais Próximos', Icons.location_on, const Color(0xFF4F9297), NearbyLocationsScreen()),
                 squareButton(context, 'Mapa Interativo', Icons.map, const Color(0xFF316472), MapScreen()),
                 squareButton(context, 'Previsão Climática', Icons.cloud, const Color(0xFF282631), WeatherInfoScreen()),
+                squareButton(context, 'Calculadora de Alimentos', Icons.calculate, const Color(0xFF8A2BE2), FoodCalculatorScreen()),
+                squareButton(context, 'Alertas Climáticos', Icons.calculate, const Color.fromARGB(255, 2, 43, 0), AlertasClimaticosScreen()),
                 squareButton(context, 'OPSEC Digital', Icons.shield, const Color(0xFF5555AA), OPSECDigitalScreen()),
                 squareButton(context, 'Repetidoras de Rádio', Icons.radio, const Color(0xFF2D333D), RepeaterListScreen()),
                 squareButton(context, 'Informações sobre Marés', Icons.waves, const Color(0xFF90E5D5), TideInfoScreen()),
