@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:prepapp_3/pdf_view_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'map_screen.dart';
 import 'checklist_screen.dart';
@@ -152,6 +153,7 @@ class _MainScreenState extends State<MainScreen> {
               menuItem(context, '🎓 Treinamentos', TrainingContentScreen()),
             menuItem(context, 'ℹ️ Sobre o PrepApp', AboutScreen()),
             menuItem(context, '🔏 Política de Privacidade', PrivacyPolicyScreen()),
+            menuItem(context, '🔏 teste', PdfViewerScreen()),
           ],
         ),
       ),
@@ -175,14 +177,14 @@ class _MainScreenState extends State<MainScreen> {
                 squareButton(context, 'Primeiros Socorros', Icons.health_and_safety, const Color(0xFFF38E0C), FirstAidScreen()),
                 squareButton(context, 'Emergência', Icons.warning, const Color(0xFFBFC9A3), EmergencyScreen()),
                 squareButton(context, 'Locais Próximos', Icons.location_on, const Color(0xFF4F9297), NearbyLocationsScreen()),
+                squareButton(context, 'Calculadora de Alimentos', Icons.calculate, const Color.fromARGB(255, 2, 43, 0), FoodCalculatorScreen()),
+                squareButton(context, 'Alertas Climáticos', Icons.calculate, const Color.fromARGB(255, 124, 46, 26), AlertasClimaticosScreen()),
                 squareButton(context, 'Mapa Interativo', Icons.map, const Color(0xFF316472), MapScreen()),
                 squareButton(context, 'Previsão Climática', Icons.cloud, const Color(0xFF282631), WeatherInfoScreen()),
-                squareButton(context, 'Calculadora de Alimentos', Icons.calculate, const Color(0xFF8A2BE2), FoodCalculatorScreen()),
-                squareButton(context, 'Alertas Climáticos', Icons.calculate, const Color.fromARGB(255, 2, 43, 0), AlertasClimaticosScreen()),
                 squareButton(context, 'OPSEC Digital', Icons.shield, const Color(0xFF5555AA), OPSECDigitalScreen()),
-                squareButton(context, 'Repetidoras de Rádio', Icons.radio, const Color(0xFF2D333D), RepeaterListScreen()),
-                squareButton(context, 'Informações sobre Marés', Icons.waves, const Color(0xFF90E5D5), TideInfoScreen()),
-                squareButton(context, 'Checklists', Icons.checklist, const Color(0xFF4F9297), ChecklistScreen()),
+                squareButton(context, 'Repetidoras de Rádio', Icons.radio, const Color(0xFF90E5D5), RepeaterListScreen()),
+                squareButton(context, 'Informações sobre Marés', Icons.waves, const Color(0xFF4F9297), TideInfoScreen()),
+                squareButton(context, 'Checklists', Icons.checklist, const Color(0xFF2D333D), ChecklistScreen()),
               ],
             ),
           ),

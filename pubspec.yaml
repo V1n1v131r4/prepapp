@@ -23,6 +23,8 @@ dependencies:
   xml: ^6.5.0
   diacritic: ^0.1.3
   geocoding: ^2.1.0
+  flutter_pdfview: ^1.2.7
+  path_provider: ^2.1.2  # Para acessar diretórios do dispositivo
 
 dev_dependencies:
   flutter_test:
@@ -44,3 +46,4 @@ flutter:
     - assets/logo.png
     - assets/compass.png
     - assets/compass_needle.png
+    - assets/meu_arquivo.pdf
