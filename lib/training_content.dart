@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:flutter/services.dart' show rootBundle;
 
 class TrainingContentScreen extends StatelessWidget {
-  const TrainingContentScreen({super.key});
+  final List<Map<String, String>> pdfFiles = [
+    {"title": "Comece pelo começo", "asset": "assets/Comece_pelo_Comeco.pdf"},
+    {"title": "Treinando a Mente e o Corpo", "asset": "assets/Treinando_a_Mente_e_o_Corpo.pdf"},
+    {"title": "Lâminas e Armas de Fogo", "asset": "assets/Laminas_e_Armas_de_Fogo.pdf"},
+    {"title": "Mochila de Sobrevivência B.O.B", "asset": "assets/Mochila_de_Sobrevivencia_BOB.pdf"},
+    {"title": "Técnicas de Evasão Urbana", "asset": "assets/Tecnicas_de_Evasao_Urbana.pdf"},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -11,35 +21,38 @@ class TrainingContentScreen extends StatelessWidget {
         backgroundColor: Colors.black,
       ),
       backgroundColor: Colors.black,
-      body: ListView(
-        padding: const EdgeInsets.all(16),
+      body: Column(
         children: [
-          _buildTrainingCard(
-            title: "Noções Básicas de Sobrevivência",
-            description: "Aprenda técnicas essenciais para sobrevivência em situações extremas.",
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: pdfFiles.map((pdf) => _buildTrainingCard(context, pdf['title']!, pdf['asset']!)).toList(),
+            ),
           ),
-          _buildTrainingCard(
-            title: "Primeiros Socorros em Emergências",
-            description: "Guia prático para lidar com ferimentos, fraturas e outras emergências médicas.",
-          ),
-          _buildTrainingCard(
-            title: "Orientação e Navegação",
-            description: "Saiba como usar mapas, bússolas e técnicas de navegação para se localizar em qualquer terreno.",
-          ),
-          _buildTrainingCard(
-            title: "Técnicas de Obtenção de Água Potável",
-            description: "Métodos eficazes para encontrar e purificar água na natureza.",
-          ),
-          _buildTrainingCard(
-            title: "Construção de Abrigos de Emergência",
-            description: "Aprenda a montar diferentes tipos de abrigos para proteção contra intempéries.",
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+              ),
+              onPressed: () {
+                print("Abrindo comunidade no Telegram...");
+              },
+              icon: Icon(Icons.telegram, size: 24),
+              label: Text("Faça parte da nossa comunidade exclusiva para membros no Telegram", style: TextStyle(fontSize: 14)),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTrainingCard({required String title, required String description}) {
+  Widget _buildTrainingCard(BuildContext context, String title, String asset) {
     return Card(
       color: Colors.grey[850],
       margin: const EdgeInsets.symmetric(vertical: 10),
@@ -48,15 +61,82 @@ class TrainingContentScreen extends StatelessWidget {
           title,
           style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(
-          description,
-          style: const TextStyle(color: Colors.grey),
-        ),
         trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
         onTap: () {
-          // Aqui você pode adicionar a navegação para os detalhes do treinamento
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PdfViewerScreen(
+                pdfAsset: asset,
+                title: title,
+              ),
+            ),
+          );
         },
       ),
+    );
+  }
+}
+
+class PdfViewerScreen extends StatefulWidget {
+  final String pdfAsset;
+  final String title;
+
+  PdfViewerScreen({required this.pdfAsset, required this.title});
+
+  @override
+  _PdfViewerScreenState createState() => _PdfViewerScreenState();
+}
+
+class _PdfViewerScreenState extends State<PdfViewerScreen> {
+  String? _localPath;
+  bool _error = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPdf();
+  }
+
+  Future<void> _loadPdf() async {
+    try {
+      final tempDir = await getTemporaryDirectory();
+      final tempFile = File("${tempDir.path}/${widget.pdfAsset.split('/').last}");
+
+      if (!tempFile.existsSync()) {
+        final data = await rootBundle.load(widget.pdfAsset);
+        await tempFile.writeAsBytes(data.buffer.asUint8List(), flush: true);
+      }
+
+      if (await tempFile.exists()) {
+        setState(() {
+          _localPath = tempFile.path;
+        });
+      } else {
+        throw Exception("Falha ao copiar PDF.");
+      }
+    } catch (e) {
+      setState(() {
+        _error = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.title)),
+      body: _error
+          ? Center(child: Text("Erro ao carregar PDF", style: TextStyle(color: Colors.red, fontSize: 18)))
+          : _localPath == null
+              ? Center(child: CircularProgressIndicator())
+              : PDFView(
+                  filePath: _localPath,
+                  enableSwipe: true,
+                  swipeHorizontal: false,
+                  autoSpacing: true,
+                  pageFling: true,
+                ),
     );
   }
 }
