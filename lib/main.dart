@@ -69,7 +69,7 @@ class _MainScreenState extends State<MainScreen> {
     final Stream<List<PurchaseDetails>> purchaseStream = InAppPurchase.instance.purchaseStream;
     purchaseStream.listen((purchaseDetailsList) {
       for (var purchase in purchaseDetailsList) {
-        if (purchase.productID == "prepapp_premium" &&
+        if (purchase.productID == "prepappsignature" &&
             (purchase.status == PurchaseStatus.purchased || purchase.status == PurchaseStatus.restored)) {
           prefs.setBool('isPremium', true);
           setState(() {
@@ -153,8 +153,6 @@ class _MainScreenState extends State<MainScreen> {
               menuItem(context, '🎓 Treinamentos', TrainingContentScreen()),
             menuItem(context, 'ℹ️ Sobre o PrepApp', AboutScreen()),
             menuItem(context, '🔏 Política de Privacidade', PrivacyPolicyScreen()),
-            // menuItem(context, '🔏 teste', PdfListScreen()),
-            // menuItem(context, '🔏 teste', TrainingContentScreen()),
           ],
         ),
       ),
@@ -194,3 +192,4 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+      
