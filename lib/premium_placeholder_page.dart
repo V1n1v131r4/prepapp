@@ -46,7 +46,7 @@ class _PremiumPlaceholderPageState extends State<PremiumPlaceholderPage> {
 
   /// 🛍️ **Carrega os produtos disponíveis**
   Future<void> _loadProducts() async {
-    const Set<String> _productIds = {'prepapp_premium'};
+    const Set<String> _productIds = {'prepapp_signature'};
     final ProductDetailsResponse response = await _iap.queryProductDetails(_productIds);
 
     if (response.productDetails.isNotEmpty) {
@@ -60,7 +60,7 @@ class _PremiumPlaceholderPageState extends State<PremiumPlaceholderPage> {
   void _handlePurchaseUpdates(List<PurchaseDetails> purchases) async {
     for (var purchase in purchases) {
       if (purchase.status == PurchaseStatus.purchased || purchase.status == PurchaseStatus.restored) {
-        if (purchase.productID == "prepapp_premium") {
+        if (purchase.productID == "prepappsignature") {
           setState(() {
             _isPremium = true;
           });
@@ -129,7 +129,7 @@ class _PremiumPlaceholderPageState extends State<PremiumPlaceholderPage> {
                     child: _isProcessing
                         ? const CircularProgressIndicator(color: Colors.white)
                         : Text(
-                            _products.isNotEmpty ? "Upgrade para Premium (${_products.first.price})" : "Carregando...",
+                            _products.isNotEmpty ? "Assinar Premium (${_products.first.price})" : "Carregando...",
                           ),
                   ),
           ],
