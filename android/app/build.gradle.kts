@@ -23,8 +23,8 @@ android {
         applicationId = "com.bunqr.prepapp"
         minSdk = 21
         targetSdk = flutter.targetSdkVersion
-        versionCode = 12
-        versionName = "1.0.12"
+        versionCode = 13
+        versionName = "1.1"
     }
 
     signingConfigs {
