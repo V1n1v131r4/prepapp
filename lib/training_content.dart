@@ -3,6 +3,7 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:url_launcher/url_launcher.dart';
 
 class TrainingContentScreen extends StatelessWidget {
   final List<Map<String, String>> pdfFiles = [
@@ -40,8 +41,15 @@ class TrainingContentScreen extends StatelessWidget {
                 ),
                 padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
               ),
-              onPressed: () {
-                print("Abrindo comunidade no Telegram...");
+              onPressed: () async {
+                final Uri telegramUri = Uri.parse("tg://resolve?domain=skIcLRDNS4szNGJh");
+                final Uri webUri = Uri.parse("https://t.me/+skIcLRDNS4szNGJh");
+
+                if (await canLaunchUrl(telegramUri)) {
+                  await launchUrl(telegramUri, mode: LaunchMode.externalApplication);
+                } else {
+                  await launchUrl(webUri, mode: LaunchMode.externalApplication);
+                }
               },
               icon: Icon(Icons.telegram, size: 24),
               label: Text("Faça parte da nossa comunidade exclusiva para membros no Telegram", style: TextStyle(fontSize: 14)),

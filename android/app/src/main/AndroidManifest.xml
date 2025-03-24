@@ -56,5 +56,6 @@
             <action android:name="android.intent.action.CALL" />
             <data android:scheme="tel" />
         </intent>
+        <package android:name="org.telegram.messenger" />
     </queries>
 </manifest>

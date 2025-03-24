@@ -18,7 +18,26 @@ class _RepeaterListScreenState extends State<RepeaterListScreen> {
   @override
   void initState() {
     super.initState();
+    _showRegulationPopup();
     fetchRepeaters();
+  }
+
+  Future<void> _showRegulationPopup() async {
+    await Future.delayed(Duration(milliseconds: 500)); // Pequeno delay para exibir após a abertura da tela
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text("Aviso Importante"),
+        content: Text("O Serviço de Radioamador é regulado pela legislação de telecomunicações e por normas específicas. A Agência Nacional de Telecomunicações (ANATEL) é responsável por regular o Serviço de Radioamador."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text("Entendi"),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> fetchRepeaters() async {
