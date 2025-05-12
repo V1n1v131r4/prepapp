@@ -147,10 +147,10 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               ),
             ),
-            if (!_isPremium)
-              menuItem(context, '🚀 Upgrade para Premium', PremiumPlaceholderPage())
-            else
-              menuItem(context, '🎓 Treinamentos', TrainingContentScreen()),
+            //if (!_isPremium)
+            //  menuItem(context, '🚀 Upgrade para Premium', PremiumPlaceholderPage())
+            //else
+            //  menuItem(context, '🎓 Treinamentos', TrainingContentScreen()),
             menuItem(context, 'ℹ️ Sobre o PrepApp', AboutScreen()),
             menuItem(context, '🔏 Política de Privacidade', PrivacyPolicyScreen()),
           ],
