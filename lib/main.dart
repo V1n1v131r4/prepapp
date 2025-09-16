@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // Gate e vendors (stub F-Droid)
 import 'feature_gate.dart';
@@ -37,7 +38,7 @@ class PrepApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'PrepApp (F-Droid)',
+      title: 'PrepApp',
       theme: ThemeData.dark(),
       home: const MainScreen(),
     );
@@ -53,6 +54,30 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // ---- helpers para abrir email/site ----
+  Future<void> _launchEmail() async {
+    final uri = Uri(
+      scheme: 'mailto',
+      path: 'contact@bunqrlabs.com',
+    );
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Não foi possível abrir o app de e-mail.')),
+      );
+    }
+  }
+
+  Future<void> _launchSite() async {
+    final uri = Uri.parse('https://bunqrlabs.com');
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Não foi possível abrir o site.')),
+      );
+    }
+  }
 
   Widget menuItem(BuildContext context, String title, Widget destination) {
     return ListTile(
@@ -126,15 +151,25 @@ class _MainScreenState extends State<MainScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
-                  Text('PrepApp (F-Droid)', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                  Text('PrepApp', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
                   SizedBox(height: 8),
                   Text('Esteja preparado!', style: TextStyle(fontSize: 16, color: Colors.white70)),
                 ],
               ),
             ),
-            // sem 'const' nas telas que podem não ter construtor const
-            menuItem(context, 'ℹ️ Sobre o PrepApp', AboutScreen()),
-            menuItem(context, '🔏 Política de Privacidade', PrivacyPolicyScreen()),
+            menuItem(context, 'ℹ️ Sobre o PrepApp', const AboutScreen()),
+            menuItem(context, '🔏 Política de Privacidade', const PrivacyPolicyScreen()),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.email),
+              title: const Text('Contato: contact@bunqrlabs.com'),
+              onTap: _launchEmail,
+            ),
+            ListTile(
+              leading: const Icon(Icons.public),
+              title: const Text('Site: bunqrlabs.com'),
+              onTap: _launchSite,
+            ),
           ],
         ),
       ),
@@ -154,13 +189,12 @@ class _MainScreenState extends State<MainScreen> {
               crossAxisSpacing: 15,
               padding: const EdgeInsets.all(20),
               children: [
-                squareButton(context, 'Guia de Sobrevivência', Icons.book, const Color(0xFF354048), SurvivalGuideScreen()),
-                squareButton(context, 'Primeiros Socorros', Icons.health_and_safety, const Color(0xFFF38E0C), FirstAidScreen()),
-                squareButton(context, 'Emergência', Icons.warning, const Color(0xFFBFC9A3), EmergencyScreen()),
+                squareButton(context, 'Guia de Sobrevivência', Icons.book, const Color(0xFF354048), const SurvivalGuideScreen()),
+                squareButton(context, 'Primeiros Socorros', Icons.health_and_safety, const Color(0xFFF38E0C), const FirstAidScreen()),
+                squareButton(context, 'Emergência', Icons.warning, const Color(0xFFBFC9A3), const EmergencyScreen()),
                 squareButton(context, 'Locais Próximos', Icons.location_on, const Color(0xFF4F9297), NearbyLocationsScreen()),
                 squareButton(context, 'Calculadora de Alimentos', Icons.calculate, const Color.fromARGB(255, 2, 43, 0), FoodCalculatorScreen()),
                 squareButton(context, 'Alertas Climáticos', Icons.campaign, const Color.fromARGB(255, 124, 46, 26), AlertasClimaticosScreen()),
-                // MapScreen foi implementada com const no seu código; manter const aqui é seguro
                 squareButton(context, 'Mapa Interativo', Icons.map, const Color(0xFF316472), const MapScreen()),
                 squareButton(context, 'Previsão Climática', Icons.cloud, const Color(0xFF282631), WeatherInfoScreen()),
                 squareButton(context, 'OPSEC Digital', Icons.shield, const Color(0xFF5555AA), OPSECDigitalScreen()),

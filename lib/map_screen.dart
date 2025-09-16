@@ -21,45 +21,62 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
+    _restoreLastCoords().then((_) => _getCurrentLocation());
+  }
+
+  Future<void> _restoreLastCoords() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lat = prefs.getDouble("lat");
+    final lng = prefs.getDouble("lng");
+    if (lat != null && lng != null) {
+      _currentPosition = LatLng(lat, lng);
+    }
   }
 
   Future<void> _getCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      setState(() => _loading = false);
-      _showSnack('Serviço de localização desativado.');
-      return;
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        setState(() => _loading = false);
-        _showSnack('Permissão de localização negada.');
+    try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        _finishLoadingWithMessage('Serviço de localização desativado.');
         return;
       }
-    }
 
-    if (permission == LocationPermission.deniedForever) {
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          _finishLoadingWithMessage('Permissão de localização negada.');
+          return;
+        }
+      }
+      if (permission == LocationPermission.deniedForever) {
+        _finishLoadingWithMessage('Permissão negada permanentemente.');
+        return;
+      }
+
+      final pos = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      _currentPosition = LatLng(pos.latitude, pos.longitude);
+      _addNearbyMarkers();
+
       setState(() => _loading = false);
-      _showSnack('Permissão de localização negada permanentemente.');
-      return;
+
+      // garante que o FlutterMap já montou antes de mover a camera
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _mapController.move(_currentPosition, 15.0);
+      });
+    } catch (e) {
+      _finishLoadingWithMessage('Falha ao obter localização: $e');
     }
+  }
 
-    final Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-
-    _currentPosition = LatLng(position.latitude, position.longitude);
-    _addNearbyMarkers();
+  void _finishLoadingWithMessage(String msg) {
     setState(() => _loading = false);
-
-    _mapController.move(_currentPosition, 15.0);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    }
   }
 
   void _addNearbyMarkers() {
@@ -107,7 +124,9 @@ class _MapScreenState extends State<MapScreen> {
         _addNearbyMarkers();
         _loading = false;
       });
-      _mapController.move(_currentPosition, 15.0);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _mapController.move(_currentPosition, 15.0);
+      });
     } else {
       _showSnack("Nenhuma coordenada offline salva.");
     }
@@ -135,6 +154,16 @@ class _MapScreenState extends State<MapScreen> {
             icon: const Icon(Icons.wifi_off),
             onPressed: _loadOfflineMap,
             tooltip: "Carregar Mapa Offline (coordenadas)",
+          ),
+          IconButton(
+            icon: const Icon(Icons.gps_fixed),
+            onPressed: () {
+              // re-centra se já temos posição
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                _mapController.move(_currentPosition, 15.0);
+              });
+            },
+            tooltip: "Centralizar",
           ),
         ],
       ),

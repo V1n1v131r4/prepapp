@@ -12,24 +12,32 @@ class AboutScreen extends StatelessWidget {
         backgroundColor: Colors.black,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0), // Aumentei o espaço com a borda
+        padding: const EdgeInsets.all(24.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 'Somos o primeiro App de Sobrevivência e Preparação focado no público brasileiro.',
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold), // Fonte um pouco menor
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 10),
               const Text(
                 'O celular é indispensável hoje em dia, e por quê não usarmos ele para benefício das nossas preparações e sobrevivência?',
-                style: TextStyle(color: Colors.white, fontSize: 14), // Fonte um pouco menor
+                style: TextStyle(color: Colors.white, fontSize: 14),
               ),
               const SizedBox(height: 20),
               const Text(
                 'O PrepApp tem as seguintes funcionalidades:',
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 10),
               const Text(
@@ -45,29 +53,37 @@ class AboutScreen extends StatelessWidget {
                 '- Dicas de OPSEC digital\n'
                 '- Calculadora de preparação, com a função de montar kits de alimentos para armazenamento baseado em dietas calóricas diárias\n'
                 '- e muito mais.',
-                style: TextStyle(color: Colors.white, fontSize: 14), // Fonte um pouco menor
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Para os nossos usuários Premium, o PrepApp tem uma área exclusiva de cursos e treinamentos nos diversos temas de Sobrevivencialismo e Preparação, com conteúdos exclusivos e interativos (vídeo aulas, Lives e etc).',
-                style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Colors.white, fontSize: 14),
               ),
               const SizedBox(height: 20),
               const Text(
                 'Esteja preparado!',
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Contato: contact@bunqrlabs.com',
+                style: TextStyle(color: Colors.white70, fontSize: 14),
+              ),
+              const Text(
+                'Site: bunqrlabs.com',
+                style: TextStyle(color: Colors.white70, fontSize: 14),
               ),
               const SizedBox(height: 30),
               Center(
                 child: Column(
                   children: [
                     Image.asset(
-                      'assets/bunqr_logo.png', // Certifique-se que o arquivo está no caminho correto
+                      'assets/bunqr_logo.png',
                       width: 100,
                     ),
                     const SizedBox(height: 10),
                     const Text(
-                      'www.bunqrstudios.com',
+                      'Bunqr Labs',
                       style: TextStyle(color: Colors.blue, fontSize: 14),
                     ),
                   ],
