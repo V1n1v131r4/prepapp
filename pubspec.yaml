@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # MAPA FOSS
+  # Mapas FOSS
   flutter_map: ^6.1.0
   latlong2: ^0.9.0
 
@@ -27,9 +27,8 @@ dependencies:
   xml: ^6.5.0
   diacritic: ^0.1.3
   flutter_pdfview: ^1.2.7
-
+  html: ^0.15.4
   cupertino_icons: ^1.0.8
-  html: ^0.15.6
 
 dev_dependencies:
   flutter_test:

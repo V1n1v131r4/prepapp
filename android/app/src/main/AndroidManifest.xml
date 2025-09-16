@@ -1,15 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bunqr.prepapp.fdroid">
 
-    <!-- Permissões: use só o que precisar de fato -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!-- Só inclua se REALMENTE precisar de geolocalização em 2º plano, com tela de justificativa -->
-    <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
-
-    <!-- (Opcional) Bluetooth / Nearby caso use comunicação offline -->
-    <!-- <uses-permission android:name="android.permission.BLUETOOTH" /> -->
-    <!-- <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> -->
-    <!-- <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" /> -->
 
     <application
         android:name="${applicationName}"
@@ -18,6 +10,30 @@
         android:usesCleartextTraffic="false"
         android:allowBackup="true"
         android:supportsRtl="true">
-        <!-- Atividades/serviços do Flutter são injetados pelo plugin -->
+
+        <!-- Dica: meta-data abaixo ajuda a “travar” o embedding V2 -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <!-- (Opcional) Splash preservado, se você tiver -->
+        <!-- <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable"
+                   android:resource="@drawable/launch_background" /> -->
+
     </application>
 </manifest>
