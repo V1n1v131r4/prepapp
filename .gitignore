@@ -43,3 +43,12 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# chaves/artefatos sensíveis
+*.keystore
+*.jks
+*.p12
+*.pem
+*.crt
+*.key
+
