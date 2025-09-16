@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:prepapp_3/pdf_view_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+// Gate e vendors (stub F-Droid)
+import 'feature_gate.dart';
+import 'vendors/vendors.dart';
+import 'vendors/vendors_fdroid.dart';
+
+import 'pdf_view_screen.dart';
 import 'map_screen.dart';
 import 'checklist_screen.dart';
 import 'tide_info_screen.dart';
@@ -14,17 +18,15 @@ import 'about_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'nearby_locations_screen.dart';
 import 'opsec_digital_screen.dart';
-import 'premium_placeholder_page.dart';
-import 'training_content.dart';
 import 'calculator_screen.dart';
 import 'weather_alert_screen.dart';
 
-void main() async {
+late final Vendors vendors;
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final bool available = await InAppPurchase.instance.isAvailable();
-  if (!available) {
-    debugPrint("⚠️ Google Play Billing não está disponível.");
-  }
+  vendors = const VendorsFdroid();
+  await vendors.init();
   runApp(const PrepApp());
 }
 
@@ -35,7 +37,7 @@ class PrepApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'PrepApp',
+      title: 'PrepApp (F-Droid)',
       theme: ThemeData.dark(),
       home: const MainScreen(),
     );
@@ -46,40 +48,11 @@ class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
-  _MainScreenState createState() => _MainScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _isPremium = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkPremiumStatus();
-  }
-
-  Future<void> _checkPremiumStatus() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final bool isPremium = prefs.getBool('isPremium') ?? false;
-    setState(() {
-      _isPremium = isPremium;
-    });
-
-    final Stream<List<PurchaseDetails>> purchaseStream = InAppPurchase.instance.purchaseStream;
-    purchaseStream.listen((purchaseDetailsList) {
-      for (var purchase in purchaseDetailsList) {
-        if (purchase.productID == "prepappsignature" &&
-            (purchase.status == PurchaseStatus.purchased || purchase.status == PurchaseStatus.restored)) {
-          prefs.setBool('isPremium', true);
-          setState(() {
-            _isPremium = true;
-          });
-          break;
-        }
-      }
-    });
-  }
 
   Widget menuItem(BuildContext context, String title, Widget destination) {
     return ListTile(
@@ -93,7 +66,13 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget squareButton(BuildContext context, String title, IconData icon, Color color, Widget destination) {
+  Widget squareButton(
+    BuildContext context,
+    String title,
+    IconData icon,
+    Color color,
+    Widget destination,
+  ) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
@@ -120,6 +99,12 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
+  void dispose() {
+    vendors.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
@@ -141,16 +126,13 @@ class _MainScreenState extends State<MainScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
-                  Text('PrepApp', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                  Text('PrepApp (F-Droid)', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
                   SizedBox(height: 8),
                   Text('Esteja preparado!', style: TextStyle(fontSize: 16, color: Colors.white70)),
                 ],
               ),
             ),
-            //if (!_isPremium)
-            //  menuItem(context, '🚀 Upgrade para Premium', PremiumPlaceholderPage())
-            //else
-            //  menuItem(context, '🎓 Treinamentos', TrainingContentScreen()),
+            // sem 'const' nas telas que podem não ter construtor const
             menuItem(context, 'ℹ️ Sobre o PrepApp', AboutScreen()),
             menuItem(context, '🔏 Política de Privacidade', PrivacyPolicyScreen()),
           ],
@@ -177,8 +159,9 @@ class _MainScreenState extends State<MainScreen> {
                 squareButton(context, 'Emergência', Icons.warning, const Color(0xFFBFC9A3), EmergencyScreen()),
                 squareButton(context, 'Locais Próximos', Icons.location_on, const Color(0xFF4F9297), NearbyLocationsScreen()),
                 squareButton(context, 'Calculadora de Alimentos', Icons.calculate, const Color.fromARGB(255, 2, 43, 0), FoodCalculatorScreen()),
-                squareButton(context, 'Alertas Climáticos', Icons.calculate, const Color.fromARGB(255, 124, 46, 26), AlertasClimaticosScreen()),
-                squareButton(context, 'Mapa Interativo', Icons.map, const Color(0xFF316472), MapScreen()),
+                squareButton(context, 'Alertas Climáticos', Icons.campaign, const Color.fromARGB(255, 124, 46, 26), AlertasClimaticosScreen()),
+                // MapScreen foi implementada com const no seu código; manter const aqui é seguro
+                squareButton(context, 'Mapa Interativo', Icons.map, const Color(0xFF316472), const MapScreen()),
                 squareButton(context, 'Previsão Climática', Icons.cloud, const Color(0xFF282631), WeatherInfoScreen()),
                 squareButton(context, 'OPSEC Digital', Icons.shield, const Color(0xFF5555AA), OPSECDigitalScreen()),
                 squareButton(context, 'Repetidoras de Rádio', Icons.radio, const Color(0xFF90E5D5), RepeaterListScreen()),
@@ -192,4 +175,3 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
-      

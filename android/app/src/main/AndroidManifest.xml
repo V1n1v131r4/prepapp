@@ -1,60 +1,23 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-feature android:name="android.hardware.location.gps" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.bunqr.prepapp.fdroid">
+
+    <!-- Permissões: use só o que precisar de fato -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- Só inclua se REALMENTE precisar de geolocalização em 2º plano, com tela de justificativa -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
+
+    <!-- (Opcional) Bluetooth / Nearby caso use comunicação offline -->
+    <!-- <uses-permission android:name="android.permission.BLUETOOTH" /> -->
+    <!-- <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> -->
+    <!-- <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" /> -->
 
     <application
-        android:label="PrepApp"
         android:name="${applicationName}"
+        android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
-        android:enableOnBackInvokedCallback="true">
-
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
-            android:taskAffinity=""
-            android:theme="@style/LaunchTheme"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-            android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize">
-
-            <meta-data
-                android:name="io.flutter.embedding.android.NormalTheme"
-                android:resource="@style/NormalTheme" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <!-- Meta-data para o Flutter -->
-        <meta-data
-            android:name="flutterEmbedding"
-            android:value="2" />
-
-        <!-- Chave da API do Google Maps -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCT1Uf1shnpAG4e_qYnAMP8fdmHqCH4me4" />
+        android:usesCleartextTraffic="false"
+        android:allowBackup="true"
+        android:supportsRtl="true">
+        <!-- Atividades/serviços do Flutter são injetados pelo plugin -->
     </application>
-
-    <!-- Permissões necessárias -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="com.android.vending.BILLING"/>
-
-
-    <!-- Consultas para intents específicas -->
-    <queries>
-        <intent>
-            <action android:name="android.intent.action.PROCESS_TEXT" />
-            <data android:mimeType="text/plain" />
-        </intent>
-        <intent>
-            <action android:name="android.intent.action.CALL" />
-            <data android:scheme="tel" />
-        </intent>
-        <package android:name="org.telegram.messenger" />
-    </queries>
 </manifest>

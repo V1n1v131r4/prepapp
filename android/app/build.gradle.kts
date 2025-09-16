@@ -1,14 +1,13 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
 android {
-    namespace = "com.bunqr.prepapp"
+    namespace = "com.bunqr.prepapp.fdroid"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -19,29 +18,33 @@ android {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
-    defaultConfig {
-        applicationId = "com.bunqr.prepapp"
-        minSdk = 21
-        targetSdk = flutter.targetSdkVersion
-        versionCode = 14
-        versionName = "1.2"
+    // (Opcional) Se futuramente quiser usar BuildConfig.*:
+    buildFeatures {
+        buildConfig = true
     }
 
-    signingConfigs {
-        create("release") {
-            storeFile = file("../../prepapp.keystore") // Caminho para o keystore
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "B3nj4m1n"
-            keyAlias = "prepapp"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: "B3nj4m1n"
-        }
+    defaultConfig {
+        applicationId = "com.bunqr.prepapp.fdroid"
+        minSdk = 21
+        targetSdk = flutter.targetSdkVersion
+        versionCode = 1_000_001
+        versionName = "1.0.1-fdroid"
+        // REMOVIDO: buildConfigField("boolean", "FDROID", "true")
     }
 
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = false
             isShrinkResources = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("release")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            // F-Droid re-assina; deixe sem assinatura local
+            signingConfig = null
+        }
+        getByName("debug") {
+            // padrão
         }
     }
 }
