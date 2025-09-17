@@ -1,20 +1,21 @@
 name: prepapp_3
-description: "PrepApp — build F-Droid (FLOSS only)"
+description: "PrepApp — F-Droid (FLOSS only)"
 publish_to: 'none'
-version: 0.1.0
+version: 0.1.0+1000001
 
 environment:
-  sdk: ^3.7.0
+  sdk: ">=3.7.0 <4.0.0"
+  flutter: "3.24.3"  # exact Flutter version as requested
 
 dependencies:
   flutter:
     sdk: flutter
 
-  # Mapas FOSS
+  # MAPA 100% FOSS (substitui google_maps_flutter)
   flutter_map: ^6.1.0
   latlong2: ^0.9.0
 
-  # Localização / utilidades
+  # Localização / utilidades (todas FOSS)
   geolocator: ^13.0.2
   geocoding: ^2.1.0
   permission_handler: ^11.0.1
