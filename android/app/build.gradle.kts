@@ -1,24 +1,24 @@
 plugins {
     id("com.android.application")
-    id("kotlin-android")
+    id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
 }
 
 android {
     namespace = "com.bunqr.prepapp.fdroid"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.0.12077973"
+    // ndkVersion REMOVIDO para evitar exigência de NDK no build server
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
-    // (Opcional) Se futuramente quiser usar BuildConfig.*:
+    // Habilite se for usar BuildConfig.* agora ou no futuro
     buildFeatures {
         buildConfig = true
     }
@@ -29,7 +29,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = 1_000_001
         versionName = "1.0.1-fdroid"
-        // REMOVIDO: buildConfigField("boolean", "FDROID", "true")
+        // Sem buildConfigField para manter o schema limpo no F-Droid
     }
 
     buildTypes {
@@ -40,8 +40,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // F-Droid re-assina; deixe sem assinatura local
-            signingConfig = null
+            // Não defina signing aqui — o F-Droid re-assina
         }
         getByName("debug") {
             // padrão
