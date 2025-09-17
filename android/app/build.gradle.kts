@@ -6,17 +6,14 @@ plugins {
 
 android {
     namespace = "com.bunqr.prepapp.fdroid"
-    compileSdk = flutter.compileSdkVersion
-    // ndkVersion REMOVIDO para evitar exigência de NDK no build server
+    compileSdk = 35
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
+    kotlinOptions { jvmTarget = "17" }   
 
     // Habilite se for usar BuildConfig.* agora ou no futuro
     buildFeatures {
@@ -26,9 +23,9 @@ android {
     defaultConfig {
         applicationId = "com.bunqr.prepapp.fdroid"
         minSdk = 21
-        targetSdk = flutter.targetSdkVersion
-        versionCode = 1_000_001
-        versionName = "1.0.1-fdroid"
+        targetSdk = 35
+        versionCode = 1000005
+        versionName = "1.0.5-fdroid"
         // Sem buildConfigField para manter o schema limpo no F-Droid
     }
 

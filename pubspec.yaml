@@ -51,10 +51,4 @@ flutter:
     - assets/banner.png
     - assets/bunqr_logo.png
     - assets/logo.png
-    - assets/compass.png
-    - assets/compass_needle.png
-    - assets/Comece_pelo_Comeco.pdf
-    - assets/Treinando_a_Mente_e_o_Corpo.pdf
-    - assets/Laminas_e_Armas_de_Fogo.pdf
-    - assets/Mochila_de_Sobrevivencia_BOB.pdf
-    - assets/Tecnicas_de_Evasao_Urbana.pdf
+  
