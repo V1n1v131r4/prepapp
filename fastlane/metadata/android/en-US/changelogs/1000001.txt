@@ -1,0 +1,1 @@
+Initial F-Droid release (FLOSS-only build): replaced Google Maps with OpenStreetMap (flutter_map) and removed all proprietary dependencies.

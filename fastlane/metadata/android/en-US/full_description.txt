@@ -1,0 +1,13 @@
+PrepApp is a free and open-source survival and preparedness app focused on the Brazilian audience.
+
+Features:
+• Survival guide and first aid
+• Weather alerts and forecasts
+• Tide information
+• Nearby useful locations
+• Interactive OpenStreetMap (flutter_map)
+• Radio repeater list
+• Food storage calculator
+• Digital OPSEC tips
+
+No Google Play Services, no Firebase, no ads, no in-app purchases.
