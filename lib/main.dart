@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:prepapp_3/pdf_view_screen.dart';
 import 'map_screen.dart';
 import 'checklist_screen.dart';
 import 'tide_info_screen.dart';
@@ -82,6 +81,7 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           Icon(icon, size: 40, color: Colors.white),
           const SizedBox(height: 10),
+          const SizedBox(height: 0), // mantém layout estável
           Text(
             title,
             textAlign: TextAlign.center,
@@ -114,14 +114,19 @@ class _MainScreenState extends State<MainScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('PrepApp',
-                      style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white)),
+                  Text(
+                    'PrepApp',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
                   SizedBox(height: 8),
-                  Text('Esteja preparado!',
-                      style: TextStyle(fontSize: 16, color: Colors.white70)),
+                  Text(
+                    'Esteja preparado!',
+                    style: TextStyle(fontSize: 16, color: Colors.white70),
+                  ),
                 ],
               ),
             ),
@@ -146,33 +151,90 @@ class _MainScreenState extends State<MainScreen> {
               crossAxisSpacing: 15,
               padding: const EdgeInsets.all(20),
               children: [
-                squareButton(context, 'Guia de Sobrevivência', Icons.book,
-                    const Color(0xFF354048), const SurvivalGuideScreen()),
-                squareButton(context, 'Primeiros Socorros',
-                    Icons.health_and_safety, const Color(0xFFF38E0C),
-                    const FirstAidScreen()),
-                squareButton(context, 'Emergência', Icons.warning,
-                    const Color(0xFFBFC9A3), const EmergencyScreen()),
-                squareButton(context, 'Locais Próximos', Icons.location_on,
-                    const Color(0xFF4F9297), NearbyLocationsScreen()),
-                squareButton(context, 'Calculadora de Alimentos',
-                    Icons.calculate, const Color.fromARGB(255, 2, 43, 0),
-                    FoodCalculatorScreen()),
-                squareButton(context, 'Alertas Climáticos', Icons.warning_amber,
-                    const Color.fromARGB(255, 124, 46, 26),
-                    AlertasClimaticosScreen()),
-                squareButton(context, 'Mapa Interativo', Icons.map,
-                    const Color(0xFF316472), const MapScreen()),
-                squareButton(context, 'Previsão Climática', Icons.cloud,
-                    const Color(0xFF282631), const WeatherInfoScreen()),
-                squareButton(context, 'OPSEC Digital', Icons.shield,
-                    const Color(0xFF5555AA), const OPSECDigitalScreen()),
-                squareButton(context, 'Repetidoras de Rádio', Icons.radio,
-                    const Color(0xFF90E5D5), const RepeaterListScreen()),
-                squareButton(context, 'Informações sobre Marés', Icons.waves,
-                    const Color(0xFF4F9297), const TideInfoScreen()),
-                squareButton(context, 'Checklists', Icons.checklist,
-                    const Color(0xFF2D333D), const ChecklistScreen()),
+                squareButton(
+                  context,
+                  'Guia de Sobrevivência',
+                  Icons.book,
+                  const Color(0xFF354048),
+                  SurvivalGuideScreen(),
+                ),
+                squareButton(
+                  context,
+                  'Primeiros Socorros',
+                  Icons.health_and_safety,
+                  const Color(0xFFF38E0C),
+                  FirstAidScreen(),
+                ),
+                squareButton(
+                  context,
+                  'Emergência',
+                  Icons.warning,
+                  const Color(0xFFBFC9A3),
+                  EmergencyScreen(),
+                ),
+                squareButton(
+                  context,
+                  'Locais Próximos',
+                  Icons.location_on,
+                  const Color(0xFF4F9297),
+                  NearbyLocationsScreen(),
+                ),
+                squareButton(
+                  context,
+                  'Calculadora de Alimentos',
+                  Icons.calculate,
+                  const Color.fromARGB(255, 2, 43, 0),
+                  FoodCalculatorScreen(),
+                ),
+                squareButton(
+                  context,
+                  'Alertas Climáticos',
+                  Icons.warning_amber,
+                  const Color.fromARGB(255, 124, 46, 26),
+                  AlertasClimaticosScreen(),
+                ),
+                squareButton(
+                  context,
+                  'Mapa Interativo',
+                  Icons.map,
+                  const Color(0xFF316472),
+                  MapScreen(),
+                ),
+                squareButton(
+                  context,
+                  'Previsão Climática',
+                  Icons.cloud,
+                  const Color(0xFF282631),
+                  WeatherInfoScreen(),
+                ),
+                squareButton(
+                  context,
+                  'OPSEC Digital',
+                  Icons.shield,
+                  const Color(0xFF5555AA),
+                  OPSECDigitalScreen(),
+                ),
+                squareButton(
+                  context,
+                  'Repetidoras de Rádio',
+                  Icons.radio,
+                  const Color(0xFF90E5D5),
+                  RepeaterListScreen(),
+                ),
+                squareButton(
+                  context,
+                  'Informações sobre Marés',
+                  Icons.waves,
+                  const Color(0xFF4F9297),
+                  TideInfoScreen(),
+                ),
+                squareButton(
+                  context,
+                  'Checklists',
+                  Icons.checklist,
+                  const Color(0xFF2D333D),
+                  ChecklistScreen(),
+                ),
               ],
             ),
           ),
