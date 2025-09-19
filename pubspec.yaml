@@ -1,42 +1,49 @@
 name: prepapp_3
-description: "A new Flutter project."
+description: "PrepApp — F-Droid (FLOSS only)"
 publish_to: 'none'
-version: 0.1.0
 
 environment:
-  sdk: ^3.7.0
+  flutter: "3.24.3"      # pedido explícito do time F-Droid
+  sdk: ">=3.5.3 <4.0.0"  # compatível com Flutter 3.24.3
+
+version: 1.0.5-fdroid+1000005
 
 dependencies:
   flutter:
     sdk: flutter
-  google_maps_flutter: ^2.5.0
-  geolocator: ^13.0.2
-  http: ^0.13.6
-  shared_preferences: ^2.2.2
-  url_launcher: ^6.3.1
-  cupertino_icons: ^1.0.8
-  intl: ^0.20.2
-  flutter_launcher_icons: ^0.14.3
+
+  # MAPA 100% FOSS (substitui google_maps_flutter):
+  flutter_map: ^8.2.1
+  latlong2: ^0.9.1
+
+  # Utilidades FOSS
+  geolocator: ^13.0.2        # usar LocationManager (sem GMS) – ver nota abaixo
+  geocoding: ^2.1.0
   permission_handler: ^11.0.1
-  in_app_purchase: ^3.1.8
+  shared_preferences: ^2.2.2
+  path_provider: ^2.1.2
+  url_launcher: ^6.3.1
+  intl: ^0.20.2
+  http: ^1.2.2
   xml2json: ^5.3.1
   xml: ^6.5.0
   diacritic: ^0.1.3
-  geocoding: ^2.1.0
   flutter_pdfview: ^1.2.7
-  path_provider: ^2.1.2  # Para acessar diretórios do dispositivo
+  html: ^0.15.4
+  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.3
 
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/logo.png" # Caminho da sua imagem
-  adaptive_icon_background: "#000000" # Cor de fundo para Android
-  adaptive_icon_foreground: "assets/logo.png" # Opcional, para ícones adaptativos
+  image_path: "assets/logo.png"
+  adaptive_icon_background: "#000000"
+  adaptive_icon_foreground: "assets/logo.png"
 
 flutter:
   uses-material-design: true
@@ -44,10 +51,3 @@ flutter:
     - assets/banner.png
     - assets/bunqr_logo.png
     - assets/logo.png
-    - assets/compass.png
-    - assets/compass_needle.png
-    - assets/Comece_pelo_Comeco.pdf
-    - assets/Treinando_a_Mente_e_o_Corpo.pdf
-    - assets/Laminas_e_Armas_de_Fogo.pdf
-    - assets/Mochila_de_Sobrevivencia_BOB.pdf
-    - assets/Tecnicas_de_Evasao_Urbana.pdf
