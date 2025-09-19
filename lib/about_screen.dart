@@ -1,81 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
+  static const _appName = 'PrepApp';
+  static const _version = '1.0.5-fdroid';
+  static const _website = 'https://bunqrlabs.com'; 
+  static const _email = 'contact@bunqrlabs.com';   
+
+  Future<void> _openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      // fallback silencioso
+    }
+  }
+
+  Future<void> _sendEmail(String email) async {
+    final uri = Uri(
+      scheme: 'mailto',
+      path: email,
+      query: Uri.encodeQueryComponent('subject=$_appName ($_version) – contato'),
+    );
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.bodyMedium;
+
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text('Sobre o PrepApp'),
-        backgroundColor: Colors.black,
+        title: const Text('Sobre'),
+        backgroundColor: const Color(0xFF24212F),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0), // Aumentei o espaço com a borda
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Somos o primeiro App de Sobrevivência e Preparação focado no público brasileiro.',
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold), // Fonte um pouco menor
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'O celular é indispensável hoje em dia, e por quê não usarmos ele para benefício das nossas preparações e sobrevivência?',
-                style: TextStyle(color: Colors.white, fontSize: 14), // Fonte um pouco menor
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'O PrepApp tem as seguintes funcionalidades:',
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                '- Mapa interativo da localização atual do usuário, com a opção de salvá-lo offline para uso sem internet disponível.\n'
-                '- Pontos de interesse próximos da localização do usuário, tais como: pontos de coleta de água, parques nacionais, postos de combustível, lojas de ferramentas, hospitais, dentre outros.\n'
-                '- Ficha de Saúde\n'
-                '- Guia interativo de Primeiros-Socorros para situações de emergência\n'
-                '- "Botão de emergência" com opção de ligar com apenas um clique para os principais serviços de emergência do Brasil.\n'
-                '- Previsão do clima baseada na localização, com opção de buscar por outra localidade.\n'
-                '- Informações sobre Marés\n'
-                '- Lista das principais Repetidoras de Radioamador do Brasil\n'
-                '- Guia de Sobrevivência completo, com conteúdos exclusivos sobre água, fogo, abrigo, alimentos, defesa, equipamentos, preparação, técnicas de sobrevivência, mochila de evasão e etc.\n'
-                '- Dicas de OPSEC digital\n'
-                '- Calculadora de preparação, com a função de montar kits de alimentos para armazenamento baseado em dietas calóricas diárias\n'
-                '- e muito mais.',
-                style: TextStyle(color: Colors.white, fontSize: 14), // Fonte um pouco menor
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Para os nossos usuários Premium, o PrepApp tem uma área exclusiva de cursos e treinamentos nos diversos temas de Sobrevivencialismo e Preparação, com conteúdos exclusivos e interativos (vídeo aulas, Lives e etc).',
-                style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Esteja preparado!',
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 30),
-              Center(
-                child: Column(
-                  children: [
-                    Image.asset(
-                      'assets/bunqr_logo.png', // Certifique-se que o arquivo está no caminho correto
-                      width: 100,
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'www.bunqrstudios.com',
-                      style: TextStyle(color: Colors.blue, fontSize: 14),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+      backgroundColor: const Color(0xFF141424),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          const SizedBox(height: 12),
+          Text(_appName, style: Theme.of(context).textTheme.headlineSmall),
+          const SizedBox(height: 6),
+          Text('Versão $_version • Build F-Droid (FLOSS)', style: textStyle),
+          const SizedBox(height: 20),
+          Text(
+            'O PrepApp ajuda você a estar preparado: guias de sobrevivência, '
+            'primeiros socorros, ações de emergência, locais próximos, '
+            'repetidoras de rádio, marés e clima. Esta build é 100% FLOSS '
+            '(sem Google Play Services e sem compras no app).',
+            style: textStyle,
           ),
-        ),
+          const SizedBox(height: 24),
+          ListTile(
+            leading: const Icon(Icons.public),
+            title: const Text('Site'),
+            subtitle: Text(_website),
+            onTap: () => _openUrl(_website),
+          ),
+          ListTile(
+            leading: const Icon(Icons.email),
+            title: const Text('Contato'),
+            subtitle: Text(_email),
+            onTap: () => _sendEmail(_email),
+          ),
+          const Divider(height: 32),
+          ListTile(
+            leading: const Icon(Icons.verified_user),
+            title: const Text('Licença'),
+            subtitle: const Text('MIT (veja LICENSE na raiz do repositório)'),
+          ),
+        ],
       ),
     );
   }
