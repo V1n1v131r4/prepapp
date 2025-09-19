@@ -1,3 +1,14 @@
-# prepapp_3
+# PrepApp — F-Droid build
 
-A new Flutter project.
+## Requisitos
+- Flutter 3.24.3
+- Android SDK com NDK 27.0.12077973
+- Java 17
+
+## Build local
+```bash
+flutter clean
+flutter pub get
+cd android
+./gradlew clean
+./gradlew :app:assembleRelease -x lint

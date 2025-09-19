@@ -1,0 +1,2 @@
+PrepApp helps you stay prepared: survival guides, first aid, emergency actions, nearby POIs, radio repeaters, tides, weather, and offline-friendly utilities. 
+This F-Droid build is 100% FLOSS and uses open map tiles (no Google Play Services or in-app billing).

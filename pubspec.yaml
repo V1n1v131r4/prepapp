@@ -13,8 +13,8 @@ dependencies:
     sdk: flutter
 
   # MAPA 100% FOSS (substitui google_maps_flutter):
-  flutter_map: ^8.2.1
-  latlong2: ^0.9.1
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.0
 
   # Utilidades FOSS
   geolocator: ^13.0.2        # usar LocationManager (sem GMS) – ver nota abaixo
