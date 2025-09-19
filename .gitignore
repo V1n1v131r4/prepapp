@@ -52,3 +52,33 @@ app.*.map.json
 *.crt
 *.key
 
+# Flutter/Android outputs e caches
+build/
+**/build/
+.gradle/
+**/.gradle/
+.cxx/
+local.properties
+
+# Flutter SDK e caches
+.flutter-plugins
+.flutter-plugins-dependencies
+.dart_tool/
+.packages
+.pub-cache/
+.flutter-sdk/
+**/bin/cache/
+**/bin/cache/**
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Plataformas geradas
+ios/
+macos/
+windows/
+linux/
+web/
+
