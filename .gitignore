@@ -83,3 +83,5 @@ linux/
 web/
 
 android/local.properties
+android.bak*
+*.bak
