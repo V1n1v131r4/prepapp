@@ -1,0 +1,4 @@
+// android/build.gradle
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}

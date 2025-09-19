@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.bunqr.prepapp"
+    namespace = "com.example.prepapp_3"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,28 +20,21 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.bunqr.prepapp"
-        minSdk = 21
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId = "com.example.prepapp_3"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 14
-        versionName = "1.2"
-    }
-
-    signingConfigs {
-        create("release") {
-            storeFile = file("../../prepapp.keystore") // Caminho para o keystore
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "B3nj4m1n"
-            keyAlias = "prepapp"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: "B3nj4m1n"
-        }
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            isShrinkResources = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("release")
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 }
