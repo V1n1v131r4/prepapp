@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
 
   # MAPA 100% FOSS (substitui google_maps_flutter):
-  flutter_map: ^6.1.0
+  flutter_map: 7.2.0
   latlong2: ^0.9.0
 
   # Utilidades FOSS
