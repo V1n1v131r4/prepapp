@@ -1,0 +1,1 @@
+Primeira build para o F-Droid: apenas FLOSS, mapas abertos, sem Play Services/IAP.

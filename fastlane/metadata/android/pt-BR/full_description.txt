@@ -1,0 +1,2 @@
+O PrepApp ajuda você a estar preparado: guias de sobrevivência, primeiros socorros, ações de emergência, locais próximos, repetidoras de rádio, marés, clima e utilidades com foco em uso offline.
+Esta versão para o F-Droid é 100% FLOSS e usa mapas abertos (sem Google Play Services ou compras no app).
