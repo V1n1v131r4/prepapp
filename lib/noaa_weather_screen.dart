@@ -1,16 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+// import relativo pro shim
+import '../location_shim.dart';
 
 class NOAAWeatherScreen extends StatefulWidget {
   const NOAAWeatherScreen({super.key});
 
   @override
-  _NOAAWeatherScreenState createState() => _NOAAWeatherScreenState();
+  State<NOAAWeatherScreen> createState() => _NOAAWeatherScreenState();
 }
 
 class _NOAAWeatherScreenState extends State<NOAAWeatherScreen> {
+  final AppLocation _appLoc = AppLocation();
+
   Map<String, dynamic>? weatherData;
   bool isLoading = true;
   String errorMessage = '';
@@ -28,8 +32,15 @@ class _NOAAWeatherScreenState extends State<NOAAWeatherScreen> {
     });
 
     try {
-      Position position = await _determinePosition();
-      await fetchWeatherData(position.latitude, position.longitude);
+      final data = await _appLoc.getCurrentLocation();
+      final lat = data?.latitude;
+      final lon = data?.longitude;
+
+      if (lat == null || lon == null) {
+        throw 'Não foi possível obter a localização atual.';
+      }
+
+      await fetchWeatherData(lat, lon);
     } catch (e) {
       setState(() {
         errorMessage = 'Erro ao obter localização: $e';
@@ -38,26 +49,12 @@ class _NOAAWeatherScreenState extends State<NOAAWeatherScreen> {
     }
   }
 
-  Future<Position> _determinePosition() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.deniedForever) {
-        throw 'Permissão de localização negada permanentemente.';
-      }
-      if (permission == LocationPermission.denied) {
-        throw 'Permissão de localização negada.';
-      }
-    }
-    return await Geolocator.getCurrentPosition();
-  }
-
   Future<void> fetchWeatherData(double lat, double lon) async {
     final pointUrl = Uri.parse('https://api.weather.gov/points/$lat,$lon');
 
     try {
       final pointResponse = await http.get(pointUrl, headers: {
-        'User-Agent': 'FlutterApp (your_email@example.com)',
+        'User-Agent': 'PrepApp (contact@bunqrlabs.com)',
       });
 
       if (pointResponse.statusCode != 200) {
@@ -65,10 +62,11 @@ class _NOAAWeatherScreenState extends State<NOAAWeatherScreen> {
       }
 
       final pointData = json.decode(pointResponse.body);
-      final forecastUrl = pointData['properties']['forecast'];
+      final forecastUrl = pointData['properties']?['forecast'];
+      if (forecastUrl == null) throw 'Ponto NOAA sem URL de previsão.';
 
       final weatherResponse = await http.get(Uri.parse(forecastUrl), headers: {
-        'User-Agent': 'FlutterApp (your_email@example.com)',
+        'User-Agent': 'PrepApp (contact@bunqrlabs.com)',
       });
 
       if (weatherResponse.statusCode == 200) {
@@ -109,10 +107,10 @@ class _NOAAWeatherScreenState extends State<NOAAWeatherScreen> {
               ? Center(child: Text(errorMessage, style: const TextStyle(color: Colors.white)))
               : ListView.builder(
                   padding: const EdgeInsets.all(10),
-                  itemCount: weatherData?['periods'].length ?? 0,
+                  itemCount: weatherData?['periods']?.length ?? 0,
                   itemBuilder: (context, index) {
                     final period = weatherData?['periods'][index];
-                    final double tempFahrenheit = period['temperature'].toDouble();
+                    final double tempFahrenheit = (period['temperature'] as num).toDouble();
                     final double tempCelsius = fahrenheitToCelsius(tempFahrenheit);
 
                     return Card(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// use import relativo pro shim
+import '../location_shim.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -13,10 +15,13 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final MapController _mapController = MapController();
-  LatLng _currentPosition = const LatLng(-23.0, -45.5); // fallback (ex.: Vale do Paraíba)
+  LatLng _currentPosition = const LatLng(-23.0, -45.5); // fallback
   final List<Marker> _markers = [];
   bool _loading = true;
   bool _offlineMode = false;
+  bool _mapReady = false;
+
+  final AppLocation _appLoc = AppLocation();
 
   @override
   void initState() {
@@ -26,43 +31,29 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _initLocation() async {
     try {
-      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        _finishLoading();
-        return;
+      final data = await _appLoc.getCurrentLocation();
+      final lat = data?.latitude;
+      final lng = data?.longitude;
+      if (lat != null && lng != null) {
+        _currentPosition = LatLng(lat, lng);
+        _addNearbyMarkers();
       }
-
-      var permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          _finishLoading();
-          return;
-        }
-      }
-      if (permission == LocationPermission.deniedForever) {
-        _finishLoading();
-        return;
-      }
-
-      final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      _currentPosition = LatLng(pos.latitude, pos.longitude);
-      _addNearbyMarkers();
     } catch (_) {
-      // mantém fallback
+      // mantém fallback silenciosamente
     } finally {
       _finishLoading();
-      // centraliza no ponto atual
-      _mapController.move(_currentPosition, 13);
+      if (_markers.isEmpty) _addNearbyMarkers(); // garante pointer no fallback
+      _maybeMoveToCurrent();
     }
   }
 
   void _finishLoading() {
-    if (mounted) {
-      setState(() => _loading = false);
+    if (mounted) setState(() => _loading = false);
+  }
+
+  void _maybeMoveToCurrent() {
+    if (_mapReady) {
+      _mapController.move(_currentPosition, 13);
     }
   }
 
@@ -70,6 +61,22 @@ class _MapScreenState extends State<MapScreen> {
     _markers
       ..clear()
       ..addAll([
+        // 🔵 Marker da posição atual
+        Marker(
+          point: _currentPosition,
+          width: 46,
+          height: 46,
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.cyanAccent.withOpacity(0.25),
+              border: Border.all(color: Colors.cyanAccent, width: 2),
+            ),
+            child: const Icon(Icons.my_location, size: 20, color: Colors.cyanAccent),
+          ),
+        ),
+        // Exemplos de marcadores próximos
         Marker(
           point: LatLng(_currentPosition.latitude + 0.01, _currentPosition.longitude),
           width: 40,
@@ -115,7 +122,7 @@ class _MapScreenState extends State<MapScreen> {
         _offlineMode = true;
       });
       _addNearbyMarkers();
-      _mapController.move(_currentPosition, 13);
+      _maybeMoveToCurrent();
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -128,10 +135,8 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final tiles = TileLayer(
-      // OpenStreetMap padrão — 100% FLOSS
       urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
       userAgentPackageName: 'com.bunqr.prepapp.fdroid',
-      // OBS: isso não baixa tiles offline. Para cache/tiles offline reais, usar plugins específicos.
     );
 
     return Scaffold(
@@ -159,6 +164,10 @@ class _MapScreenState extends State<MapScreen> {
               options: MapOptions(
                 initialCenter: _currentPosition,
                 initialZoom: 13,
+                onMapReady: () {
+                  _mapReady = true;
+                  _maybeMoveToCurrent();
+                },
               ),
               children: [
                 tiles,
@@ -167,7 +176,7 @@ class _MapScreenState extends State<MapScreen> {
             ),
       floatingActionButton: !_loading
           ? FloatingActionButton(
-              onPressed: () => _mapController.move(_currentPosition, 13),
+              onPressed: _maybeMoveToCurrent,
               tooltip: 'Centralizar',
               child: const Icon(Icons.my_location),
             )

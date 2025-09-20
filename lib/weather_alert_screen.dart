@@ -1,40 +1,47 @@
+// lib/weather_alert_screen.dart
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:xml/xml.dart' as xml;
-import 'dart:convert';
-import 'package:geolocator/geolocator.dart';
+import '../location_shim.dart';
 
 class AlertasClimaticosScreen extends StatefulWidget {
+  const AlertasClimaticosScreen({super.key});
+
   @override
-  _AlertasClimaticosScreenState createState() => _AlertasClimaticosScreenState();
+  State<AlertasClimaticosScreen> createState() => _AlertasClimaticosScreenState();
 }
 
 class _AlertasClimaticosScreenState extends State<AlertasClimaticosScreen> {
   final TextEditingController _cityController = TextEditingController();
+  final AppLocation _appLoc = AppLocation();
+
   List<Map<String, String>> _alerts = [];
   List<Map<String, String>> _filteredAlerts = [];
   String _statusMessage = "Carregando alertas...";
-  String? _userLocation;
+  double? _lat;
+  double? _lon;
 
   @override
   void initState() {
     super.initState();
-    _determinePosition();
+    _initLocationAndFetch();
   }
 
-  Future<void> _determinePosition() async {
+  Future<void> _initLocationAndFetch() async {
     try {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      _fetchAlerts(position.latitude, position.longitude);
-    } catch (e) {
-      setState(() => _statusMessage = "Erro ao obter localização.");
-      _fetchAlerts();
+      final data = await _appLoc.getCurrentLocation();
+      _lat = data?.latitude;
+      _lon = data?.longitude;
+    } catch (_) {
+      // segue sem localização
+    } finally {
+      await _fetchAlerts(_lat, _lon);
     }
   }
 
   Future<void> _fetchAlerts([double? lat, double? lon]) async {
-    final url = "https://apiprevmet3.inmet.gov.br/avisos/rss/";
+    const url = "https://apiprevmet3.inmet.gov.br/avisos/rss/";
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode != 200) {
@@ -44,21 +51,17 @@ class _AlertasClimaticosScreenState extends State<AlertasClimaticosScreen> {
 
       final document = xml.XmlDocument.parse(utf8.decode(response.bodyBytes));
       final items = document.findAllElements('item');
-      List<Map<String, String>> alerts = [];
+      final alerts = <Map<String, String>>[];
 
-      for (var item in items) {
-        String title = item.findElements('title').isNotEmpty
-            ? item.findElements('title').single.text
-            : "Sem título";
-        String description = item.findElements('description').isNotEmpty
-            ? _parseDescription(item.findElements('description').single.text)
-            : "Sem descrição";
-        String pubDate = item.findElements('pubDate').isNotEmpty
-            ? item.findElements('pubDate').single.text
-            : "Data desconhecida";
+      for (final item in items) {
+        final title = item.getElement('title')?.innerText ?? "Sem título";
+        final descriptionRaw = item.getElement('description')?.innerText ?? "Sem descrição";
+        final description = _parseDescription(descriptionRaw);
+        final pubDate = item.getElement('pubDate')?.innerText ?? "Data desconhecida";
 
-        bool isNearby = lat != null && lon != null && title.toLowerCase().contains("${lat.toInt()}");
-        
+        // Heurística simples; podemos evoluir depois por UF/cidade
+        final isNearby = (lat != null && lon != null) && title.toLowerCase().contains("região");
+
         alerts.add({
           "title": title,
           "description": description,
@@ -67,7 +70,11 @@ class _AlertasClimaticosScreenState extends State<AlertasClimaticosScreen> {
         });
       }
 
-      alerts.sort((a, b) => (b["isNearby"] == "true" ? 1 : 0).compareTo(a["isNearby"] == "true" ? 1 : 0));
+      alerts.sort((a, b) {
+        final ai = a["isNearby"] == "true" ? 1 : 0;
+        final bi = b["isNearby"] == "true" ? 1 : 0;
+        return bi.compareTo(ai);
+      });
 
       setState(() {
         _alerts = alerts;
@@ -75,24 +82,23 @@ class _AlertasClimaticosScreenState extends State<AlertasClimaticosScreen> {
         _statusMessage = alerts.isEmpty ? "Nenhum alerta disponível." : "";
       });
     } catch (e) {
-      print("Erro ao obter alertas: $e");
       setState(() => _statusMessage = "Erro ao processar os alertas.");
     }
   }
 
   String _parseDescription(String text) {
+    // remove tags HTML
     text = text.replaceAll(RegExp(r'<[^>]*>'), ' ');
     text = text.replaceAll(RegExp(r'\s+'), ' ').trim();
 
-    final RegExp regex = RegExp(
-        r'Status\s*(.*?)(?=Evento|$)|'
-        r'Evento\s*(.*?)(?=Severidade|$)|'
-        r'Severidade\s*(.*?)(?=Início|$)|'
-        r'Início\s*(.*?)(?=Fim|$)|'
-        r'Fim\s*(.*?)(?=Descrição|$)|'
-        r'Descrição\s*(.*)');
-
-    final matches = regex.allMatches(text);
+    final regex = RegExp(
+      r'Status\s*(.*?)(?=Evento|$)|'
+      r'Evento\s*(.*?)(?=Severidade|$)|'
+      r'Severidade\s*(.*?)(?=Início|$)|'
+      r'Início\s*(.*?)(?=Fim|$)|'
+      r'Fim\s*(.*?)(?=Descrição|$)|'
+      r'Descrição\s*(.*)',
+    );
 
     String status = "Desconhecido";
     String evento = "Desconhecido";
@@ -101,7 +107,7 @@ class _AlertasClimaticosScreenState extends State<AlertasClimaticosScreen> {
     String fim = "Não informado";
     String descricao = "Sem detalhes";
 
-    for (var match in matches) {
+    for (final match in regex.allMatches(text)) {
       if (match.group(1) != null) status = match.group(1)!.trim();
       if (match.group(2) != null) evento = match.group(2)!.trim();
       if (match.group(3) != null) severidade = match.group(3)!.trim();
@@ -120,30 +126,32 @@ class _AlertasClimaticosScreenState extends State<AlertasClimaticosScreen> {
 
   String _formatDate(String date) {
     try {
-      DateTime parsedDate = DateTime.parse(date);
-      return "${parsedDate.day.toString().padLeft(2, '0')}/"
-          "${parsedDate.month.toString().padLeft(2, '0')}/"
-          "${parsedDate.year} "
-          "${parsedDate.hour.toString().padLeft(2, '0')}:"
-          "${parsedDate.minute.toString().padLeft(2, '0')}";
-    } catch (e) {
+      final parsed = DateTime.parse(date);
+      return "${parsed.day.toString().padLeft(2, '0')}/"
+          "${parsed.month.toString().padLeft(2, '0')}/"
+          "${parsed.year} "
+          "${parsed.hour.toString().padLeft(2, '0')}:"
+          "${parsed.minute.toString().padLeft(2, '0')}";
+    } catch (_) {
       return date;
     }
   }
 
   void _filterAlerts(String query) {
+    final q = query.toLowerCase();
     setState(() {
-      _filteredAlerts = _alerts
-          .where((alert) => alert["title"]!.toLowerCase().contains(query.toLowerCase()) ||
-              alert["description"]!.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      _filteredAlerts = _alerts.where((a) {
+        final t = a["title"]?.toLowerCase() ?? "";
+        final d = a["description"]?.toLowerCase() ?? "";
+        return t.contains(q) || d.contains(q);
+      }).toList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Alertas Climáticos")),
+      appBar: AppBar(title: const Text("Alertas Climáticos")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -153,31 +161,34 @@ class _AlertasClimaticosScreenState extends State<AlertasClimaticosScreen> {
               decoration: InputDecoration(
                 labelText: "Buscar por cidade ou palavra-chave",
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                   onPressed: () => _filterAlerts(_cityController.text),
                 ),
               ),
+              onSubmitted: _filterAlerts,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (_statusMessage.isNotEmpty)
-              Text(_statusMessage, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text(_statusMessage, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             Expanded(
               child: ListView.builder(
                 itemCount: _filteredAlerts.length,
                 itemBuilder: (context, index) {
                   final alert = _filteredAlerts[index];
+                  final highlight = alert["isNearby"] == "true";
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8),
+                    color: highlight ? Colors.amber[50] : null,
+                    margin: const EdgeInsets.symmetric(vertical: 8),
                     child: Padding(
-                      padding: EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(alert["title"]!, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          SizedBox(height: 8),
-                          Text(alert["description"]!, style: TextStyle(fontSize: 14)),
-                          SizedBox(height: 8),
-                          Text("Data: ${alert["date"]!}", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                          Text(alert["title"]!, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 8),
+                          Text(alert["description"]!, style: const TextStyle(fontSize: 14)),
+                          const SizedBox(height: 8),
+                          Text("Data: ${alert["date"]!}", style: const TextStyle(fontSize: 12, color: Colors.grey)),
                         ],
                       ),
                     ),
