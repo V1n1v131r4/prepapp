@@ -5,6 +5,31 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+/**
+ * Bloqueios de dependências não-FLOSS neste módulo.
+ * Usamos configureEach (Kotlin DSL) para atingir TODAS as configurações (compile/runtime, debug/release).
+ */
+configurations.configureEach {
+    // GMS/Firebase
+    exclude(group = "com.google.android.gms")
+    exclude(group = "com.google.android.gms", module = "play-services-location")
+    exclude(group = "com.google.android.gms", module = "play-services-basement")
+    exclude(group = "com.google.android.gms", module = "play-services-tasks")
+    exclude(group = "com.google.firebase")
+
+    // Play Core (que trouxe as classes com.google.android.play.core.* no APK)
+    exclude(group = "com.google.android.play")
+    exclude(group = "com.google.android.play", module = "core")
+    exclude(group = "com.google.android.play", module = "core-common")
+
+    // Cinto de segurança: se alguma cadeia tentar reintroduzir Play Core, falha o build.
+    resolutionStrategy.eachDependency {
+        if (requested.group == "com.google.android.play") {
+            throw GradleException("Dependência proibida detectada: ${requested.group}:${requested.name}:${requested.version}")
+        }
+    }
+}
+
 android {
     namespace = "com.bunqr.prepapp.fdroid"
 
@@ -29,8 +54,9 @@ android {
 
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
-            isShrinkResources = false
+            // Remove classes "penduradas" (como Play Core se vier transitivo e não usado)
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

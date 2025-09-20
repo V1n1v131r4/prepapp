@@ -4,6 +4,7 @@
 <!-- Localização em 1º plano (precisa das duas → precisa delas no Android 12+) -->
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
 <!-- NÃO use background se não precisa rodar sem o app visível -->
 <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
