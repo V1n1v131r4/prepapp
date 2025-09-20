@@ -1,18 +1,23 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:geolocator/geolocator.dart';
 
+// import relativo pro shim
+import '../location_shim.dart';
+
+// OBS: guarde a key de forma segura/por flavor de build em produção.
 const String apiKey = "decae72b5a444fa9b93171941251802";
 
 class WeatherInfoScreen extends StatefulWidget {
   const WeatherInfoScreen({super.key});
 
   @override
-  _WeatherInfoScreenState createState() => _WeatherInfoScreenState();
+  State<WeatherInfoScreen> createState() => _WeatherInfoScreenState();
 }
 
 class _WeatherInfoScreenState extends State<WeatherInfoScreen> {
+  final AppLocation _appLoc = AppLocation();
+
   Map<String, dynamic>? weatherData;
   bool isLoading = false;
   String errorMessage = '';
@@ -30,7 +35,7 @@ class _WeatherInfoScreenState extends State<WeatherInfoScreen> {
       errorMessage = '';
     });
 
-    final url = Uri.parse("http://api.weatherapi.com/v1/current.json?key=$apiKey&q=$query&lang=pt");
+    final url = Uri.parse("https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$query&lang=pt");
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -54,12 +59,16 @@ class _WeatherInfoScreenState extends State<WeatherInfoScreen> {
 
   Future<void> _fetchWeatherByLocation() async {
     try {
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-      _fetchWeather("${position.latitude},${position.longitude}");
+      final data = await _appLoc.getCurrentLocation();
+      final lat = data?.latitude;
+      final lon = data?.longitude;
+      if (lat == null || lon == null) {
+        setState(() => errorMessage = 'Não foi possível obter a localização.');
+        return;
+      }
+      await _fetchWeather("$lat,$lon");
     } catch (e) {
-      setState(() {
-        errorMessage = 'Erro ao obter localização: $e';
-      });
+      setState(() => errorMessage = 'Erro ao obter localização: $e');
     }
   }
 
@@ -70,45 +79,54 @@ class _WeatherInfoScreenState extends State<WeatherInfoScreen> {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _cityController,
               decoration: InputDecoration(
                 labelText: "Buscar cidade",
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: () => _fetchWeather(_cityController.text),
                 ),
               ),
+              onSubmitted: _fetchWeather,
             ),
             const SizedBox(height: 20),
-            isLoading
-                ? const CircularProgressIndicator()
-                : errorMessage.isNotEmpty
-                    ? Text(errorMessage, style: const TextStyle(color: Colors.red))
-                    : weatherData != null
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                weatherData!["location"]["name"],
-                                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                "${weatherData!["current"]["temp_c"]}°C",
-                                style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                weatherData!["current"]["condition"]["text"],
-                                style: const TextStyle(fontSize: 20),
-                              ),
-                            ],
-                          )
-                        : const Text("Nenhuma informação disponível."),
+            if (isLoading) const CircularProgressIndicator(),
+            if (!isLoading && errorMessage.isNotEmpty)
+              Text(errorMessage, style: const TextStyle(color: Colors.red)),
+            if (!isLoading && errorMessage.isEmpty)
+              Expanded(
+                child: Center(
+                  child: weatherData != null
+                      ? Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              weatherData!["location"]["name"],
+                              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "${weatherData!["current"]["temp_c"]}°C",
+                              style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              weatherData!["current"]["condition"]["text"],
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        )
+                      : const Text("Nenhuma informação disponível."),
+                ),
+              ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _fetchWeatherByLocation,
+        label: const Text("Usar minha localização"),
+        icon: const Icon(Icons.my_location),
       ),
     );
   }
