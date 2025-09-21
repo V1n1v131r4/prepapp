@@ -6,7 +6,7 @@ environment:
   flutter: "3.24.3"      # pedido explícito do time F-Droid
   sdk: ">=3.5.3 <4.0.0"  # compatível com Flutter 3.24.3
 
-version: 1.0.5-fdroid+1000005
+version: 1.0.6-fdroid+1000006
 
 dependencies:
   flutter:
