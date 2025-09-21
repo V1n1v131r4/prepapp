@@ -1,28 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class EmergencyScreen extends StatelessWidget {
   const EmergencyScreen({super.key});
 
-  Future<void> _callEmergency(String number) async {
-    var status = await Permission.phone.request();
+  Future<void> _callEmergency(BuildContext context, String number) async {
+    final uri = Uri(scheme: 'tel', path: number);
 
-    if (status.isGranted) {
-      final Uri phoneUri = Uri(scheme: 'tel', path: number);
+    final ok = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication, // abre o discador do sistema
+    );
 
-      if (await canLaunchUrl(phoneUri)) {
-        await launchUrl(phoneUri, mode: LaunchMode.externalApplication);
-      } else {
-        debugPrint('Erro ao tentar iniciar a chamada para $number. Tentando fallback...');
-        try {
-          await launchUrl(phoneUri);
-        } catch (e) {
-          debugPrint('Falha ao iniciar a chamada: $e');
-        }
-      }
-    } else {
-      debugPrint('Permissão de chamada não concedida.');
+    if (!ok && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Não foi possível abrir o discador para $number')),
+      );
     }
   }
 
@@ -55,14 +48,20 @@ class EmergencyScreen extends StatelessWidget {
     );
   }
 
-  Widget _emergencyButton(BuildContext context, String text, String number, IconData icon, Color color) {
+  Widget _emergencyButton(
+    BuildContext context,
+    String text,
+    String number,
+    IconData icon,
+    Color color,
+  ) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 10),
       ),
-      onPressed: () => _callEmergency(number),
+      onPressed: () => _callEmergency(context, number),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
