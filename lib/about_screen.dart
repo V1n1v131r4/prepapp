@@ -5,7 +5,7 @@ class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
   static const _appName = 'PrepApp';
-  static const _version = '1.0.5-fdroid';
+  static const _version = '1.0.6-fdroid';
   static const _website = 'https://bunqrlabs.com'; 
   static const _email = 'contact@bunqrlabs.com';   
 
@@ -47,7 +47,7 @@ class AboutScreen extends StatelessWidget {
             'O PrepApp ajuda você a estar preparado: guias de sobrevivência, '
             'primeiros socorros, ações de emergência, locais próximos, '
             'repetidoras de rádio, marés e clima. Esta build é 100% FLOSS '
-            '(sem Google Play Services e sem compras no app).',
+            '(sem Google Play Services e nenhum tipo de rastreamento).',
             style: textStyle,
           ),
           const SizedBox(height: 24),
