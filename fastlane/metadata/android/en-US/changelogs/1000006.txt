@@ -1,0 +1,2 @@
+- Emergency screen: open dialer via tel: (no runtime permission)
+- No functional changes to location permissions
