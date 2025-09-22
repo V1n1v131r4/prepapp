@@ -1,6 +1,6 @@
 # PrepApp — F-Droid Build
 
-[![F-Droid](https://img.shields.io/f-droid/v/com.prepapp)](https://f-droid.org/packages/com.prepapp/) ![Flutter](https://img.shields.io/badge/Flutter-3.24.3-blue) ![Java](https://img.shields.io/badge/Java-17-red) ![License](https://img.shields.io/badge/License-GPLv3-green) ![Build](https://img.shields.io/badge/Build-Passing-brightgreen)    
+[![F-Droid](https://img.shields.io/f-droid/v/com.prepapp)](https://f-droid.org/packages/com.prepapp/) ![Flutter](https://img.shields.io/badge/Flutter-3.24.3-blue) ![Java](https://img.shields.io/badge/Java-17-red) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow) ![Build](https://img.shields.io/badge/Build-Passing-brightgreen)    
 
 O **PrepApp** é um aplicativo de sobrevivência e preparação para emergências, desenvolvido em **Flutter** e distribuído também pela loja **F-Droid**.  
 Ele fornece informações críticas para situações de crise e catástrofes, com foco em acessibilidade offline e utilidade prática.
