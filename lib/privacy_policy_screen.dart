@@ -16,10 +16,10 @@ class PrivacyPolicyScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
-              Text("Última atualização: 19/02/2025"),
+              Text("Última atualização: 22/09/2025"),
               SizedBox(height: 16),
               Text(
-                "A BunQr Studios valoriza a privacidade e a segurança dos usuários do PrepApp. Esta política explica como tratamos seus dados e o uso de permissões no aplicativo.",
+                "A BunQr Labs valoriza a privacidade e a segurança dos usuários do PrepApp. Esta política explica como tratamos seus dados e o uso de permissões no aplicativo.",
               ),
               SizedBox(height: 16),
               Text(
@@ -55,7 +55,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
               ),
               Text(
                 "Podemos atualizar esta Política de Privacidade periodicamente. Caso isso ocorra, informaremos os usuários sobre qualquer alteração significativa.\n\n"
-                "Se tiver dúvidas, entre em contato conosco pelo e-mail: contato@bunqr.com.",
+                "Se tiver dúvidas, entre em contato conosco pelo e-mail: contact@bunqrlabs.com.",
               ),
             ],
           ),
