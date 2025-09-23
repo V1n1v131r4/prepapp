@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -30,6 +32,14 @@ configurations.configureEach {
     }
 }
 
+// Lê versionName/versionCode do local.properties (preenchido pelo Flutter/F-Droid)
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+val flutterVersionName = (localProps.getProperty("flutter.versionName") ?: "1.0.0").trim()
+val flutterVersionCode = (localProps.getProperty("flutter.versionCode") ?: "1").trim()
+
 android {
     namespace = "com.bunqr.prepapp.fdroid"
 
@@ -40,8 +50,10 @@ android {
         applicationId = "com.bunqr.prepapp.fdroid"
         minSdk = 21
         targetSdk = 35
-        versionCode = 1000005
-        versionName = "1.0.5-fdroid"
+
+        // Usa as versões vindas do local.properties (ou fallback)
+        versionName = flutterVersionName
+        versionCode = flutterVersionCode.toInt()
     }
 
     compileOptions {
@@ -54,7 +66,7 @@ android {
 
     buildTypes {
         getByName("release") {
-            // Remove classes "penduradas" (como Play Core se vier transitivo e não usado)
+            // Remove classes “penduradas”
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
