@@ -12,7 +12,7 @@ class _NearbyLocationsScreenState extends State<NearbyLocationsScreen> {
   Position? _currentPosition;
   String _locationStatus = "Obtendo localização...";
   bool _loadingPlaces = false;
-  final String _googleApiKey = "AIzaSyCT1Uf1shnpAG4e_qYnAMP8fdmHqCH4me4"; // Armazene isso com segurança
+  final String _googleApiKey = "xxxxxxxxxxx"
   List<Map<String, dynamic>> _waterSources = [];
   List<Map<String, dynamic>> _nationalParks = [];
   List<Map<String, dynamic>> _hospitals = [];
