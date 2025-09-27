@@ -1,2 +1,1 @@
-PrepApp helps you stay prepared: survival guides, first aid, emergency actions, nearby POIs, radio repeaters, tides, weather, and offline-friendly utilities. 
-This F-Droid build is 100% FLOSS and uses open map tiles (no Google Play Services or in-app billing).
+PrepApp is a survival and emergency preparedness app designed especially for Brazil. It provides weather alerts from INMET, local maps, nearby locations, sea conditions, traffic information, and offline communication features to help users during crises and disasters.
