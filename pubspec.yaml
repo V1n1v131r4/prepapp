@@ -1,19 +1,21 @@
-name: prepapp_3
-description: "PrepApp — F-Droid (FLOSS only)"
+name: prepapp
+description: "PrepApp — informação crítica de clima, marés e alertas (FLOSS)"
 publish_to: 'none'
 
 environment:
-  flutter: "3.24.3"      # pedido explícito do time F-Droid
-  sdk: ">=3.5.3 <4.0.0"  # compatível com Flutter 3.24.3
+  flutter: "3.24.3"      # compatível com seu setup
+  sdk: ">=3.5.3 <4.0.0"
 
-version: 1.0.6-fdroid+1000006
+# Play exige versionCode maior que 14. Sugerido:
+# versionName = 1.3.0  |  versionCode = 15
+version: 1.3.0+15
 
 dependencies:
   flutter:
     sdk: flutter
 
-  # MAPA 100% FOSS (substitui google_maps_flutter):
-  flutter_map: 7.0.2
+  # MAPA 100% FOSS (substitui google_maps_flutter)
+  flutter_map: ^7.0.2
   latlong2: ^0.9.0
 
   # Utilidades FOSS
