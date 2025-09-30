@@ -61,9 +61,9 @@ android/app/build/outputs/apk/release/
 
 ## 📦 Distribuição
 
-Esta branch (fdroid) contém apenas os arquivos necessários para o build e publicação no F-Droid.
+Esta branch (main) contém apenas os arquivos necessários para o build e publicação na Play Store.
 
-A versão da Google Play Store está disponível na branch main.
+A versão do F-droid está disponível na branch fdroid.
 
 ## 🔒 Permissões
 
