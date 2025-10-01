@@ -93,3 +93,9 @@ android.bak*
 *.p12
 *.pfx
 key.properties
+
+# Keystores
+*.keystore
+*.jks
+*.p12
+prepapp.keystore.old
