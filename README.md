@@ -1,8 +1,8 @@
-# PrepApp — F-Droid Build
+# PrepApp — Play Store Build
 
-[![F-Droid](https://img.shields.io/f-droid/v/com.prepapp)](https://f-droid.org/packages/com.prepapp/) ![Flutter](https://img.shields.io/badge/Flutter-3.24.3-blue) ![Java](https://img.shields.io/badge/Java-17-red) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow) ![Build](https://img.shields.io/badge/Build-Passing-brightgreen)    
+[![Play Store](https://img.shields.io/badge/Play%20Store-PrepApp-blue)](https://play.google.com/store/apps/details?id=com.bunqr.prepapp&hl=en) ![Flutter](https://img.shields.io/badge/Flutter-3.24.3-blue) ![Java](https://img.shields.io/badge/Java-17-red) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow) ![Build](https://img.shields.io/badge/Build-Passing-brightgreen)    
 
-O **PrepApp** é um aplicativo de sobrevivência e preparação para emergências, desenvolvido em **Flutter** e distribuído também pela loja **F-Droid**.  
+O **PrepApp** é um aplicativo de sobrevivência e preparação para emergências, desenvolvido em **Flutter** e distribuído também pela loja **Play Store**.  
 Ele fornece informações críticas para situações de crise e catástrofes, com foco em acessibilidade offline e utilidade prática.
 
 ---
@@ -61,9 +61,9 @@ android/app/build/outputs/apk/release/
 
 ## 📦 Distribuição
 
-Esta branch (main) contém apenas os arquivos necessários para o build e publicação na Play Store.
+Esta branch (main) contém apenas os arquivos necessários para o build e publicação na **Play Store**.
 
-A versão do F-droid está disponível na branch fdroid.
+A versão do F-droid está disponível na branch **fdroid**.
 
 ## 🔒 Permissões
 
