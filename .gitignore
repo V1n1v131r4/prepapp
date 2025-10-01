@@ -86,3 +86,10 @@ web/
 android/local.properties
 android.bak*
 *.bak
+
+# Android keystores
+*.jks
+*.keystore
+*.p12
+*.pfx
+key.properties
