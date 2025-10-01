@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 // import relativo pro shim
 import '../location_shim.dart';
@@ -65,12 +66,12 @@ class _NearbyLocationsScreenState extends State<NearbyLocationsScreen> {
       // Raio em metros
       const radius = 5000;
 
-      _hospitals     = await _overpassAmenity(_lat!, _lng!, radius, "hospital");
-      _gasStations   = await _overpassAmenity(_lat!, _lng!, radius, "fuel");
-      _markets       = await _overpassAmenity(_lat!, _lng!, radius, "supermarket");
-      _hardwareStores= await _overpassAmenity(_lat!, _lng!, radius, "doityourself"); // lojas de material/DIY
-      _nationalParks = await _overpassParks(_lat!, _lng!, radius);
-      _waterSources  = await _overpassWater(_lat!, _lng!, radius);
+      _hospitals      = await _overpassAmenity(_lat!, _lng!, radius, "hospital");
+      _gasStations    = await _overpassAmenity(_lat!, _lng!, radius, "fuel");
+      _markets        = await _overpassAmenity(_lat!, _lng!, radius, "supermarket");
+      _hardwareStores = await _overpassAmenity(_lat!, _lng!, radius, "doityourself"); // lojas de material/DIY
+      _nationalParks  = await _overpassParks(_lat!, _lng!, radius);
+      _waterSources   = await _overpassWater(_lat!, _lng!, radius);
     } catch (e) {
       setState(() => _locationStatus = "Erro ao obter locais: $e");
     }
@@ -158,6 +159,35 @@ out center tags;
     }).toList();
   }
 
+  // --- abrir no mapa com pin
+  Future<void> _openInMaps(Map<String, dynamic> place) async {
+    final lat = place["lat"] as double?;
+    final lng = place["lng"] as double?;
+    final name = (place["name"] as String?) ?? "Local";
+    if (lat == null || lng == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Coordenadas indisponíveis para este local.")),
+        );
+      }
+      return;
+    }
+
+    // Tenta esquema geo: (abre Google Maps / app de mapas nativo)
+    final geo = Uri.parse("geo:$lat,$lng?q=$lat,$lng(${Uri.encodeComponent(name)})");
+
+    // Fallback: URL do Google Maps no browser
+    final web = Uri.parse(
+      "https://www.google.com/maps/search/?api=1&query=$lat,$lng&query_place_id=",
+    );
+
+    if (await canLaunchUrl(geo)) {
+      await launchUrl(geo, mode: LaunchMode.externalApplication);
+    } else {
+      await launchUrl(web, mode: LaunchMode.externalApplication);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -182,7 +212,19 @@ out center tags;
               ),
             )
           : _loadingPlaces
-              ? const Center(child: CircularProgressIndicator(color: Colors.white))
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      CircularProgressIndicator(color: Colors.white),
+                      SizedBox(height: 16),
+                      Text(
+                        "Aguarde, estamos buscando…",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                )
               : ListView(
                   padding: const EdgeInsets.all(16),
                   children: [
@@ -212,8 +254,14 @@ out center tags;
               ]
             : items.map((place) {
                 return ListTile(
+                  onTap: () => _openInMaps(place),
                   title: Text(place["name"], style: const TextStyle(color: Colors.white)),
                   subtitle: Text(place["address"], style: const TextStyle(color: Colors.grey)),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.directions, color: Colors.lightBlueAccent),
+                    tooltip: "Abrir no mapa",
+                    onPressed: () => _openInMaps(place),
+                  ),
                 );
               }).toList(),
       ),

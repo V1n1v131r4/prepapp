@@ -12,9 +12,24 @@ pluginManagement {
     repositories {
         google()
         mavenCentral()
+        // Repositório do Flutter
+        maven { url = uri("https://storage.googleapis.com/download.flutter.io") }
         gradlePluginPortal()
     }
 }
+
+dependencyResolutionManagement {
+    // Permite que plugins adicionem repositórios sem falhar o build
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+    repositories {
+        google()
+        mavenCentral()
+        // Repositório do Flutter também na resolução de dependências
+        maven { url = uri("https://storage.googleapis.com/download.flutter.io") }
+    }
+}
+
+rootProject.name = "prepapp_3"
 
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"

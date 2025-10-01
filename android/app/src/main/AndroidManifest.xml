@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.bunqr.prepapp">
 
     <!-- Rede -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,7 +11,7 @@
     <!-- NÃO declare background se não precisar rodar sem o app visível -->
     <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
 
-    <!-- (Opcional) Declare que GPS não é obrigatório para instalar em devices sem GPS -->
+    <!-- (Opcional) GPS não obrigatório -->
     <uses-feature
         android:name="android.hardware.location.gps"
         android:required="false" />
@@ -34,6 +35,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
 
         <!-- Necessário ao Flutter -->
         <meta-data
