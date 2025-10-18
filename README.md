@@ -1,9 +1,18 @@
 # PrepApp — Play Store Build
 
-[![Play Store](https://img.shields.io/badge/Play%20Store-PrepApp-blue)](https://play.google.com/store/apps/details?id=com.bunqr.prepapp&hl=en) ![Flutter](https://img.shields.io/badge/Flutter-3.24.3-blue) ![Java](https://img.shields.io/badge/Java-17-red) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow) ![Build](https://img.shields.io/badge/Build-Passing-brightgreen)    
+![Flutter](https://img.shields.io/badge/Flutter-3.24.3-blue) ![Java](https://img.shields.io/badge/Java-17-red) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow) ![Build](https://img.shields.io/badge/Build-Passing-brightgreen)    
 
 O **PrepApp** é um aplicativo de sobrevivência e preparação para emergências, desenvolvido em **Flutter** e distribuído também pela loja **Play Store**.  
 Ele fornece informações críticas para situações de crise e catástrofes, com foco em acessibilidade offline e utilidade prática.
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/com.bunqr.prepapp.fdroid/)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=com.bunqr.prepapp)
+
+Or download the latest APK from the [Releases Section](https://github.com/V1n1v131r4/prepapp/releases).
 
 ---
 
